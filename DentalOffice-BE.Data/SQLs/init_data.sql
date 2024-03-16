@@ -67,22 +67,26 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
     "formConfiguration":
     [
         {
-            "key":"name",
-            "type":"input",
-            "className":"col-lg-6 col-sm-12",
-            "props":{
-                "label":"Email",
-                "required":true
-            }
-        },
-        {
-            "key":"color",
-            "type":"color",
-            "props":{
-                "label":"Colore",
-                "required":true
-            },
-            "className":"col-lg-6 col-sm-12"
+            fieldGroup : [
+                {
+                    "key":"name",
+                    "type":"input",
+                    "className":"col-lg-6 col-sm-12",
+                    "props":{
+                        "label":"Email",
+                        "required":true
+                    }
+                },
+                {
+                    "key":"color",
+                    "type":"color",
+                    "props":{
+                        "label":"Colore",
+                        "required":true
+                    },
+                    "className":"col-lg-6 col-sm-12"
+                }
+            ]
         }
     ]
 }'
@@ -99,13 +103,17 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
     "formConfiguration":
     [
         {
-            "key":"name",
-            "type":"input",
-            "className":"col-12",
-            "props":{
-                "label":"Nome",
-                "required":true
-            }
+            fieldGroup : [
+                {
+                    "key":"name",
+                    "type":"input",
+                    "className":"col-12",
+                    "props":{
+                        "label":"Nome",
+                        "required":true
+                    }
+                }
+            ]
         }
     ]
 }'
@@ -121,14 +129,19 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
     ],
     "formConfiguration":
     [
+    
         {
-            "key":"name",
-            "type":"input",
-            "className":"col-12",
-            "props":{
-                "label":"Nome",
-                "required":true
-            }
+            fieldGroup : [
+                {
+                    "key":"name",
+                    "type":"input",
+                    "className":"col-12",
+                    "props":{
+                        "label":"Nome",
+                        "required":true
+                    }
+                }
+            ]
         }
     ]
 }'
@@ -145,22 +158,26 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
     "formConfiguration":
     [
         {
-            "key":"name",
-            "type":"input",
-            "className":"col-12",
-            "props":{
-                "label":"Nome",
-                "required":true
-            }
-        }, 
-        {
-            "key": "colors",
-            "type": "select",
-            "props" : {
-                "label" : "Colori Dentina",
-                "multiple" : true,
-                "options" : []
-            }
+            fieldGroup : [
+                {
+                    "key":"name",
+                    "type":"input",
+                    "className":"col-12",
+                    "props":{
+                        "label":"Nome",
+                        "required":true
+                    }
+                }, 
+                {
+                    "key": "colors",
+                    "type": "select",
+                    "props" : {
+                        "label" : "Colori Dentina",
+                        "multiple" : true,
+                        "options" : []
+                    }
+                }
+            ]
         }
     ]
 }'
@@ -177,13 +194,17 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
     "formConfiguration":
     [
         {
-            "key":"name",
-            "type":"input",
-            "className":"col-12",
-            "props":{
-                "label":"Nome",
-                "required":true
-            }
+            fieldGroup : [
+                {
+                    "key":"name",
+                    "type":"input",
+                    "className":"col-12",
+                    "props":{
+                        "label":"Nome",
+                        "required":true
+                    }
+                }
+            ]
         }
     ]
 }'
@@ -200,13 +221,17 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
     "formConfiguration":
     [
         {
-            "key":"name",
-            "type":"input",
-            "className":"col-12",
-            "props":{
-                "label":"Nome",
-                "required":true
-            }
+            fieldGroup : [
+                {
+                    "key":"name",
+                    "type":"input",
+                    "className":"col-12",
+                    "props":{
+                        "label":"Nome",
+                        "required":true
+                    }
+                }
+            ]
         }
     ]
 }'
@@ -223,13 +248,17 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
     "formConfiguration":
     [
         {
-            "key":"name",
-            "type":"input",
-            "className":"col-12",
-            "props":{
-                "label":"Nome",
-                "required":true
-            }
+            fieldGroup : [
+                {
+                    "key":"name",
+                    "type":"input",
+                    "className":"col-12",
+                    "props":{
+                        "label":"Nome",
+                        "required":true
+                    }
+                }
+            ]
         }
     ]
 }'
@@ -246,13 +275,17 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
     "formConfiguration":
     [
         {
-            "key":"name",
-            "type":"input",
-            "className":"col-12",
-            "props":{
-                "label":"Nome",
-                "required":true
-            }
+            fieldGroup : [
+                {
+                    "key":"name",
+                    "type":"input",
+                    "className":"col-12",
+                    "props":{
+                        "label":"Nome",
+                        "required":true
+                    }
+                }
+            ]
         }
     ]
 }'
@@ -269,13 +302,17 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
     "formConfiguration":
     [
         {
-            "key":"name",
-            "type":"input",
-            "className":"col-12",
-            "props":{
-                "label":"Nome",
-                "required":true
-            }
+            fieldGroup : [
+                {
+                    "key":"name",
+                    "type":"input",
+                    "className":"col-12",
+                    "props":{
+                        "label":"Nome",
+                        "required":true
+                    }
+                }
+            ]
         }
     ]
 }'
@@ -292,13 +329,17 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
     "formConfiguration":
     [
         {
-            "key":"name",
-            "type":"input",
-            "className":"col-12",
-            "props":{
-                "label":"Nome",
-                "required":true
-            }
+            fieldGroup : [
+                {
+                    "key":"name",
+                    "type":"input",
+                    "className":"col-12",
+                    "props":{
+                        "label":"Nome",
+                        "required":true
+                    }
+                }
+            ]
         }
     ]
 }'
@@ -315,13 +356,17 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
     "formConfiguration":
     [
         {
-            "key":"name",
-            "type":"input",
-            "className":"col-12",
-            "props":{
-                "label":"Nome",
-                "required":true
-            }
+            fieldGroup : [
+                {
+                    "key":"name",
+                    "type":"input",
+                    "className":"col-12",
+                    "props":{
+                        "label":"Nome",
+                        "required":true
+                    }
+                }
+            ]
         }
     ]
 }'
@@ -341,23 +386,27 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
     "formConfiguration":
     [
         {
-            "key":"name",
-            "type":"select",
-            "className":"col-12",
-            "props":{
-                "label":"Metallo",
-                "required":true,
-                "options": []
-            }
-        },
-        {
-            "key":"code",
-            "type":"input",
-            "className":"col-12",
-            "props":{
-                "label":"Codice",
-                "required":true
-            }
+            fieldGroup : [
+                {
+                    "key":"name",
+                    "type":"select",
+                    "className":"col-12",
+                    "props":{
+                        "label":"Metallo",
+                        "required":true,
+                        "options": []
+                    }
+                },
+                {
+                    "key":"code",
+                    "type":"input",
+                    "className":"col-12",
+                    "props":{
+                        "label":"Codice",
+                        "required":true
+                    }
+                }
+            ]
         }
     ]
 }'
@@ -374,33 +423,37 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
     "formConfiguration":
     [
         {
-            "key":"name",
-            "type":"select",
-            "className":"col-12",
-            "props":{
-                "label":"Dentina",
-                "required":true,
-                "options": []
-            }
-        },
-        {
-            "key":"code",
-            "type":"input",
-            "className":"col-12",
-            "props":{
-                "label":"Codice",
-                "required":true
-            }
-        },
-        {
-            "key":"color",
-            "type":"select",
-            "className":"col-12",
-            "props":{
-                "label":"Colore",
-                "required":true,
-                "options": []
-            }
+            fieldGroup : [
+                {
+                    "key":"name",
+                    "type":"select",
+                    "className":"col-12",
+                    "props":{
+                        "label":"Dentina",
+                        "required":true,
+                        "options": []
+                    }
+                },
+                {
+                    "key":"code",
+                    "type":"input",
+                    "className":"col-12",
+                    "props":{
+                        "label":"Codice",
+                        "required":true
+                    }
+                },
+                {
+                    "key":"color",
+                    "type":"select",
+                    "className":"col-12",
+                    "props":{
+                        "label":"Colore",
+                        "required":true,
+                        "options": []
+                    }
+                }
+            ]
         }
     ]
 }'
@@ -417,23 +470,27 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
     "formConfiguration":
     [
         {
-            "key":"name",
-            "type":"select",
-            "className":"col-12",
-            "props":{
-                "label":"Smalto",
-                "required":true,
-                "options": []
-            }
-        },
-        {
-            "key":"code",
-            "type":"input",
-            "className":"col-12",
-            "props":{
-                "label":"Codice",
-                "required":true
-            }
+            fieldGroup : [
+                {
+                    "key":"name",
+                    "type":"select",
+                    "className":"col-12",
+                    "props":{
+                        "label":"Smalto",
+                        "required":true,
+                        "options": []
+                    }
+                },
+                {
+                    "key":"code",
+                    "type":"input",
+                    "className":"col-12",
+                    "props":{
+                        "label":"Codice",
+                        "required":true
+                    }
+                }
+            ]
         }
     ]
 }'
@@ -450,23 +507,27 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
     "formConfiguration":
     [
         {
-            "key":"name",
-            "type":"select",
-            "className":"col-12",
-            "props":{
-                "label":"Resina Acetalica",
-                "required":true,
-                "options": []
-            }
-        },
-        {
-            "key":"code",
-            "type":"input",
-            "className":"col-12",
-            "props":{
-                "label":"Codice",
-                "required":true
-            }
+            fieldGroup : [
+                {
+                    "key":"name",
+                    "type":"select",
+                    "className":"col-12",
+                    "props":{
+                        "label":"Resina Acetalica",
+                        "required":true,
+                        "options": []
+                    }
+                },
+                {
+                    "key":"code",
+                    "type":"input",
+                    "className":"col-12",
+                    "props":{
+                        "label":"Codice",
+                        "required":true
+                    }
+                }
+            ]
         }
     ]
 }'
@@ -483,23 +544,27 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
     "formConfiguration":
     [
         {
-            "key":"name",
-            "type":"select",
-            "className":"col-12",
-            "props":{
-                "label":"Dischi Policarbonati",
-                "required":true,
-                "options": []
-            }
-        },
-        {
-            "key":"code",
-            "type":"input",
-            "className":"col-12",
-            "props":{
-                "label":"Codice",
-                "required":true
-            }
+            fieldGroup : [
+                {
+                    "key":"name",
+                    "type":"select",
+                    "className":"col-12",
+                    "props":{
+                        "label":"Dischi Policarbonati",
+                        "required":true,
+                        "options": []
+                    }
+                },
+                {
+                    "key":"code",
+                    "type":"input",
+                    "className":"col-12",
+                    "props":{
+                        "label":"Codice",
+                        "required":true
+                    }
+                }
+            ]
         }
     ]
 }'

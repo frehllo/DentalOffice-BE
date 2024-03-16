@@ -1,16 +1,23 @@
-﻿using DentalOffice_BE.Services.Models;
+﻿using DentalOffice_BE.Services.Interfaces;
+using DentalOffice_BE.Services.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections;
+
 
 namespace DentalOffice_BE.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
-public class SectionController : ControllerBase
+[Route("api/[controller]/")]
+public class SectionController(ISectionService _service) : ControllerBase
 {
     [HttpGet]
-    public async IEnumerable<SectionViewModel> GetList()
+    public async Task<IEnumerable<SectionViewModel>> GetList()
     {
+        return await _service.GetList();
+    }
 
+    [HttpGet("{route}")]
+    public async Task<SectionViewModel> GetByRoute(string route)
+    {
+        return await _service.GetByRoute(route);
     }
 }

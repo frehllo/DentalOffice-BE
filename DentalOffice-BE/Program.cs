@@ -1,5 +1,5 @@
 using DentalOffice_BE.Services;
-using DentalOffice_BE.Data;
+using DentalOffice_BE;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +9,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddServiceData(builder.Configuration);
+
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.InizializeData();
 
@@ -46,5 +48,7 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+
+app.MapControllers();
 
 app.Run();

@@ -1,12 +1,9 @@
 ﻿using DentalOffice_BE.Common;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace DentalOffice_BE.Data;
 
@@ -17,7 +14,8 @@ public class SectionDto : BaseTableKey<long>
     public string Title { get; set; } = null!;
     public string Route { get; set; } = null!;
     public string? ApiString { get; set; }
-    public SectionConfiguration? Configuration { get; set; }
+    public SectionConfiguration? Configuration { get; set; } = null;
+    [Newtonsoft.Json.JsonIgnore]
     public SectionDto? Section { get; set; }
     public ICollection<SectionDto>? SubSections { get; set; }
 }
@@ -55,6 +53,29 @@ public class SectionDtoConfiguration : IEntityTypeConfiguration<SectionDto>
             .OwnsOne(e => e.Configuration, d =>
             {
                 d.ToJson();
+                d.Property(d => d.IconName);
+                d.OwnsMany<TableHeaderField>(d => d.TableHeaderFields);
+                d.OwnsMany<FormGroupConfiguration>(d => d.FormConfiguration, a =>
+                {
+                    a.OwnsMany(a => a.FieldConfiguration, b =>
+                    {
+                        b.OwnsOne(b => b.Props, c =>
+                        {
+                            c.OwnsMany(c => c.Options);
+                        });
+                    });
+                });
+                //d.Property(_ => _.TableHeaderFields)
+                //    .HasConversion(
+                //        v => JsonConvert.SerializeObject(v),
+                //        v => JsonConvert.DeserializeObject<TableHeaderField[]>(v)
+                //    );
+                //d.Property(_ => _.IconName);
+                //d.Property(_ => _.FormConfiguration)
+                //    .HasConversion(
+                //        v => JsonConvert.SerializeObject(v),
+                //        v => JsonConvert.DeserializeObject<FormGroupConfiguration[]>(v)
+                //    );
             });
     }
 }
