@@ -57,7 +57,7 @@ public class SectionDtoConfiguration : IEntityTypeConfiguration<SectionDto>
                 d.OwnsMany<TableHeaderField>(d => d.TableHeaderFields);
                 d.OwnsMany<FormGroupConfiguration>(d => d.FormConfiguration, a =>
                 {
-                    a.OwnsMany(a => a.FieldConfiguration, b =>
+                    a.OwnsMany(a => a.FieldGroup, b =>
                     {
                         b.OwnsOne(b => b.Props, c =>
                         {

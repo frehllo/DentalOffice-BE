@@ -61,13 +61,14 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
             "field":"name"
         },
         {
-            "field":"color"
+            "field":"color",
+            "cellRender":"AGColoredCircle"
         }
     ],
     "formConfiguration":
     [
         {
-            fieldGroup : [
+            "fieldGroup" : [
                 {
                     "key":"name",
                     "type":"input",
@@ -91,7 +92,7 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
     ]
 }'
 ),
-('Metallo', '/materials-metal', '/materials/' || CAST(MetalTypeId AS TEXT), MaterialsSectionId, 
+('Metallo', '/materials-metal', '/materials-' || CAST(MetalTypeId AS TEXT), MaterialsSectionId, 
 '{
     "iconName": null,
     "tableHeaderFields":
@@ -103,7 +104,7 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
     "formConfiguration":
     [
         {
-            fieldGroup : [
+            "fieldGroup" : [
                 {
                     "key":"name",
                     "type":"input",
@@ -118,7 +119,7 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
     ]
 }'
 ),
-('Dentina', '/materials-dentin', '/materials/' || CAST(DentinTypeId AS TEXT), MaterialsSectionId, 
+('Dentina', '/materials-dentin', '/materials-' || CAST(DentinTypeId AS TEXT), MaterialsSectionId, 
 '{
     "iconName": null,
     "tableHeaderFields":
@@ -131,7 +132,7 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
     [
     
         {
-            fieldGroup : [
+            "fieldGroup" : [
                 {
                     "key":"name",
                     "type":"input",
@@ -146,7 +147,7 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
     ]
 }'
 ),
-('Smalto', '/materials-enamel', '/materials/' || CAST(EnamelTypeId AS TEXT), MaterialsSectionId, 
+('Smalto', '/materials-enamel', '/materials-' || CAST(EnamelTypeId AS TEXT), MaterialsSectionId, 
 '{
     "iconName": null,
     "tableHeaderFields":
@@ -158,7 +159,7 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
     "formConfiguration":
     [
         {
-            fieldGroup : [
+            "fieldGroup" : [
                 {
                     "key":"name",
                     "type":"input",
@@ -182,7 +183,7 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
     ]
 }'
 ),
-('Resina Acetalica', '/materials-resin', '/materials/' || CAST (ResinTypeId AS TEXT), MaterialsSectionId, 
+('Resina Acetalica', '/materials-resin', '/materials-' || CAST (ResinTypeId AS TEXT), MaterialsSectionId, 
 '{
     "iconName": null, 
     "tableHeaderFields":
@@ -194,7 +195,7 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
     "formConfiguration":
     [
         {
-            fieldGroup : [
+            "fieldGroup" : [
                 {
                     "key":"name",
                     "type":"input",
@@ -209,7 +210,7 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
     ]
 }'
 ),
-('Dischi Policarbonati', '/materials-disks', '/materials/' || CAST(DiskTypeId AS TEXT), MaterialsSectionId, 
+('Dischi Policarbonati', '/materials-disks', '/materials-' || CAST(DiskTypeId AS TEXT), MaterialsSectionId, 
 '{
     "iconName": null, 
     "tableHeaderFields":
@@ -221,7 +222,7 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
     "formConfiguration":
     [
         {
-            fieldGroup : [
+            "fieldGroup" : [
                 {
                     "key":"name",
                     "type":"input",
@@ -248,7 +249,7 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
     "formConfiguration":
     [
         {
-            fieldGroup : [
+            "fieldGroup" : [
                 {
                     "key":"name",
                     "type":"input",
@@ -275,7 +276,7 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
     "formConfiguration":
     [
         {
-            fieldGroup : [
+            "fieldGroup" : [
                 {
                     "key":"name",
                     "type":"input",
@@ -302,7 +303,7 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
     "formConfiguration":
     [
         {
-            fieldGroup : [
+            "fieldGroup" : [
                 {
                     "key":"name",
                     "type":"input",
@@ -329,7 +330,7 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
     "formConfiguration":
     [
         {
-            fieldGroup : [
+            "fieldGroup" : [
                 {
                     "key":"name",
                     "type":"input",
@@ -356,7 +357,7 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
     "formConfiguration":
     [
         {
-            fieldGroup : [
+            "fieldGroup" : [
                 {
                     "key":"name",
                     "type":"input",
@@ -371,7 +372,7 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
     ]
 }'
 ), 
-('Metallo', '/lots-metal', '/lots/' || CAST(MetalTypeId AS TEXT), LotsSectionId, 
+('Metallo', '/lots-metal', '/lots-' || CAST(MetalTypeId AS TEXT), LotsSectionId, 
 '{
     "iconName": null,
     "tableHeaderFields":
@@ -386,7 +387,7 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
     "formConfiguration":
     [
         {
-            fieldGroup : [
+            "fieldGroup" : [
                 {
                     "key":"name",
                     "type":"select",
@@ -411,7 +412,7 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
     ]
 }'
 ),
-('Dentina', '/lots-dentin', '/lots/' || CAST(DentinTypeId AS TEXT), LotsSectionId, 
+('Dentina', '/lots-dentin', '/lots-' || CAST(DentinTypeId AS TEXT), LotsSectionId, 
 '{
     "iconName": null,
     "tableHeaderFields":
@@ -423,7 +424,7 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
     "formConfiguration":
     [
         {
-            fieldGroup : [
+            "fieldGroup" : [
                 {
                     "key":"name",
                     "type":"select",
@@ -458,7 +459,7 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
     ]
 }'
 ),
-('Smalto', '/lots-enamel', '/lots/' || CAST(EnamelTypeId AS TEXT), LotsSectionId, 
+('Smalto', '/lots-enamel', '/lots-' || CAST(EnamelTypeId AS TEXT), LotsSectionId, 
 '{
     "iconName": null,
     "tableHeaderFields":
@@ -470,7 +471,7 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
     "formConfiguration":
     [
         {
-            fieldGroup : [
+            "fieldGroup" : [
                 {
                     "key":"name",
                     "type":"select",
@@ -495,7 +496,7 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
     ]
 }'
 ),
-('Resina Acetalica', '/lots-resin', '/lots/' || CAST(ResinTypeId AS TEXT), LotsSectionId, 
+('Resina Acetalica', '/lots-resin', '/lots-' || CAST(ResinTypeId AS TEXT), LotsSectionId, 
 '{
     "iconName": null, 
     "tableHeaderFields":
@@ -507,7 +508,7 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
     "formConfiguration":
     [
         {
-            fieldGroup : [
+            "fieldGroup" : [
                 {
                     "key":"name",
                     "type":"select",
@@ -532,7 +533,7 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
     ]
 }'
 ),
-('Dischi Policarbonati', '/lots-disks', '/lots/' || CAST(DiskTypeId AS TEXT), LotsSectionId, 
+('Dischi Policarbonati', '/lots-disks', '/lots-' || CAST(DiskTypeId AS TEXT), LotsSectionId, 
 '{
     "iconName": null, 
     "tableHeaderFields":
@@ -544,7 +545,7 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
     "formConfiguration":
     [
         {
-            fieldGroup : [
+            "fieldGroup" : [
                 {
                     "key":"name",
                     "type":"select",

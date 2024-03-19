@@ -1,4 +1,5 @@
 ﻿using System;
+using DentalOffice_BE.Common.Models;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -180,9 +181,9 @@ namespace DentalOffice_BE.Data.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     name = table.Column<string>(type: "text", nullable: false),
                     material_type_id = table.Column<long>(type: "bigint", nullable: false),
+                    MaterialProperties = table.Column<MaterialProperties>(type: "jsonb", nullable: true),
                     insert_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "NOW()"),
-                    update_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: true, defaultValueSql: "NOW()"),
-                    MaterialProperties = table.Column<string>(type: "jsonb", nullable: true)
+                    update_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: true, defaultValueSql: "NOW()")
                 },
                 constraints: table =>
                 {
