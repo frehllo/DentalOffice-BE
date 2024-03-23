@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using DentalOffice_BE.Common.Utility;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Npgsql;
 
 namespace DentalOffice_BE.Data;
 

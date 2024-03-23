@@ -30,6 +30,9 @@ public class FormGroupConfiguration
 
 public class FormFieldConfiguration 
 {
+
+    [JsonPropertyName("key")]
+    public string Key { get; set; } = null!;
     [JsonPropertyName("type")]
     public string Type { get; set; } = null!;
     [JsonPropertyName("className")]

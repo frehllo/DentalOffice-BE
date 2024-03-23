@@ -23,22 +23,43 @@ public class SectionService(DBContext _context) : ISectionService
         return data.Select(_ => _.MapViewModelFromDto());
     }
 
-    public async Task<SectionViewModel> GetByRoute(string apiString)
+    public async Task<SectionViewModel> GetByRoute(string route)
     {
         var query = _context.Sections.AsQueryable();
 
         query = query.Include(_ => _.SubSections).Include(_ => _.Configuration);
 
-        query = query.Where(_ => _.Route == '/' + apiString);
+        query = query.Where(_ => _.Route == '/' + route);
         
         var data = await query.FirstOrDefaultAsync();
+
+        Validate.ThrowIfNull(data);
+
+        if (data.ApiString is not null && data.ApiString.Contains("lots"))
+        {
+            string[] parts = data.ApiString.Split("-");
+            if (parts.Length > 1)
+            {
+                long type = long.Parse(parts[1]);
+                var materials = await _context.Materials.Where(_ => _.MaterialTypeId == type).OrderByDescending(_ => _.UpdateDate).ToDictionaryAsync(_ => _.Name, _ => _.Id);
+
+                foreach(var material in materials)
+                {
+                    data?.Configuration?.FormConfiguration?.FirstOrDefault()?.FieldGroup?.FirstOrDefault(_ => _.Key == "materialId")?.Props?.Options?.Add(new FormFieldPropsOption
+                    {
+                        Label = material.Key, 
+                        Value = material.Value
+                    });
+                }
+            }
+        }
 
         Validate.ThrowIfNull(data);
 
         return data.MapViewModelFromDto();
     }
 
-    public async Task<dynamic> GetSingleData(string id, string apiString)
+    public async Task<dynamic> GetSingleData(long id, string apiString)
     {
         var query = GetSingleQuery(apiString, id);
 
@@ -52,7 +73,7 @@ public class SectionService(DBContext _context) : ISectionService
         return await query.ToListAsync();
     }
 
-    private IQueryable<dynamic> GetSingleQuery(string apiString, string id)
+    private IQueryable<dynamic> GetSingleQuery(string apiString, long id)
     {
         if (apiString.Contains("materials"))
         {
@@ -60,7 +81,7 @@ public class SectionService(DBContext _context) : ISectionService
             if (parts.Length > 1)
             {
                 long type = long.Parse(parts[1]);
-                return _context.Materials.AsQueryable().Where(_ => _.MaterialTypeId == type).Where(_ => _.Id == long.Parse(id));
+                return _context.Materials.AsQueryable().Where(_ => _.MaterialTypeId == type).Where(_ => _.Id == id);
             }
         }
 
@@ -70,18 +91,18 @@ public class SectionService(DBContext _context) : ISectionService
             if (parts.Length > 1)
             {
                 long type = long.Parse(parts[1]);
-                return _context.Lots.AsQueryable().Where(_ => _.MaterialId == type).Where(_ => _.Id == long.Parse(id));
+                return _context.Lots.AsQueryable().Include(_ => _.Material).Where(_ => _.Material != null && _.Material.MaterialTypeId == type).Where(_ => _.Id == id);
             }
         }
 
         IQueryable<dynamic> query = apiString switch
         {
-            "studios" => _context.Studios.AsQueryable().Where(_ => _.Id == long.Parse(id)),
+            "studios" => _context.Studios.AsQueryable().Where(_ => _.Id == id),
             "colors" => _context.Colors.AsQueryable().Where(_ => _.Id == id),
-            "semiproducts" => _context.SemiProducts.AsQueryable().Where(_ => _.Id == long.Parse(id)),
-            "risks" => _context.Risks.AsQueryable().Where(_ => _.Id == long.Parse(id)),
-            "stages" => _context.Stages.AsQueryable().Where(_ => _.Id == long.Parse(id)),
-            "modules" => _context.Modules.AsQueryable().Where(_ => _.Id == long.Parse(id)),
+            "semiproducts" => _context.SemiProducts.AsQueryable().Where(_ => _.Id == id),
+            "risks" => _context.Risks.AsQueryable().Where(_ => _.Id == id),
+            "stages" => _context.Stages.AsQueryable().Where(_ => _.Id == id),
+            "modules" => _context.Modules.AsQueryable().Where(_ => _.Id == id),
             _ => throw new Exception("ApiString not allowed")
         };
 
@@ -106,7 +127,7 @@ public class SectionService(DBContext _context) : ISectionService
             if (parts.Length > 1)
             {
                 long type = long.Parse(parts[1]);
-                return _context.Lots.AsQueryable().Where(_ => _.MaterialId == type);
+                return _context.Lots.AsQueryable().Include(_ => _.Material).Where(_ => _.Material != null && _.Material.MaterialTypeId == type);
             }
         }
 
@@ -127,35 +148,175 @@ public class SectionService(DBContext _context) : ISectionService
     public async Task InsertData(string apiString, object data)
     {
         var type = apiString.Contains("-") ? apiString.Split("-")[0] : apiString;
-
-        var serialized = JsonConvert.SerializeObject(data);
+        long id = apiString.Contains("-") ? long.Parse(apiString.Split("-")[1]) : 0;
 
         switch (type)
         {
             case "studios":
-                StudioDto? toSend = JsonConvert.DeserializeObject<StudioDto>(data.ToString());
-                _context.Add(toSend);
+                StudioDto? studio = JsonConvert.DeserializeObject<StudioDto>(data.ToString().ThrowIfNull());
+                Validate.ThrowIfNull(studio);
+                _context.Studios.Add(studio);
                 break;
             case "colors":
-                _context.Add((ColorDto)data);
+                ColorDto? color = JsonConvert.DeserializeObject<ColorDto>(data.ToString().ThrowIfNull());
+                Validate.ThrowIfNull(color);
+                _context.Colors.Add(color);
                 break;
             case "semiproduct":
-                _context.Add((SemiProductDto)data);
+                SemiProductDto? semiproduct = JsonConvert.DeserializeObject<SemiProductDto>(data.ToString().ThrowIfNull());
+                Validate.ThrowIfNull(semiproduct);
+                _context.SemiProducts.Add(semiproduct);
                 break;
             case "risks":
-                _context.Add((RiskDto)data);
+                RiskDto? risk = JsonConvert.DeserializeObject<RiskDto>(data.ToString().ThrowIfNull());
+                Validate.ThrowIfNull(risk);
+                _context.Risks.Add(risk);
                 break;
             case "stages":
-                _context.Add((StageDto)data);
+                StageDto? stage = JsonConvert.DeserializeObject<StageDto>(data.ToString().ThrowIfNull());
+                Validate.ThrowIfNull(stage);
+                _context.Stages.Add(stage);
                 break;
             case "modules":
-                _context.Add((ModuleDto)data);
+                ModuleDto? module = JsonConvert.DeserializeObject<ModuleDto>(data.ToString().ThrowIfNull());
+                Validate.ThrowIfNull(module);
+                _context.Modules.Add(module);
                 break;
             case "lots":
-                _context.Add((LotDto)data);
+                LotDto? lot = JsonConvert.DeserializeObject<LotDto>(data.ToString().ThrowIfNull());
+                Validate.ThrowIfNull(lot);
+                _context.Lots.Add(lot);
                 break;
             case "materials":
-                _context.Add((MaterialDto)data);
+                MaterialDto? material = JsonConvert.DeserializeObject<MaterialDto>(data.ToString().ThrowIfNull());
+                Validate.ThrowIfNull(material);
+                material.MaterialTypeId = id;
+                _context.Materials.Add(material);
+                break;
+            default: throw new Exception("Route not allowed");
+        }
+
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task UpdateData(string apiString, long id, object data)
+    {
+        var type = apiString.Contains("-") ? apiString.Split("-")[0] : apiString;
+
+        if (id < 1)
+        {
+            throw new Exception("Id is mandatory on update");
+        }
+
+        switch (type)
+        {
+            case "studios":
+                StudioDto? studio = await _context.Studios.Where(_ => _.Id == id).FirstOrDefaultAsync();
+                Validate.ThrowIfNull(studio);
+                var studioModel = JsonConvert.DeserializeObject<StudioDto>(data.ToString().ThrowIfNull());
+                Validate.ThrowIfNull(studioModel);
+                studio.Name = studioModel.Name;
+                studio.Color = studioModel.Color;
+                break;
+            case "colors":
+                ColorDto? color = await _context.Colors.Where(_ => _.Id == id).FirstOrDefaultAsync();
+                Validate.ThrowIfNull(color);
+                var colorModel = JsonConvert.DeserializeObject<ColorDto>(data.ToString().ThrowIfNull());
+                Validate.ThrowIfNull(colorModel);
+                color.Code = colorModel.Code;
+                break;
+            case "semiproduct":
+                SemiProductDto? semiproduct = await _context.SemiProducts.Where(_ => _.Id == id).FirstOrDefaultAsync();
+                Validate.ThrowIfNull(semiproduct);
+                var semiproductModel =  JsonConvert.DeserializeObject<SemiProductDto>(data.ToString().ThrowIfNull());
+                Validate.ThrowIfNull(semiproductModel);
+                semiproduct.Name = semiproductModel.Name;
+                break;
+            case "risks":
+                RiskDto? risk = await _context.Risks.Where(_ => _.Id == id).FirstOrDefaultAsync();
+                Validate.ThrowIfNull(risk);
+                var riskModel = JsonConvert.DeserializeObject<RiskDto>(data.ToString().ThrowIfNull());
+                Validate.ThrowIfNull(riskModel);
+                risk.Description = riskModel.Description;
+                break;
+            case "stages":
+                StageDto? stage = await _context.Stages.Where(_ => _.Id == id).FirstOrDefaultAsync();
+                Validate.ThrowIfNull(stage);
+                var stageModel = JsonConvert.DeserializeObject<StageDto>(data.ToString().ThrowIfNull());
+                Validate.ThrowIfNull(stageModel);
+                stage.Name = stageModel.Name;
+                break;
+            case "modules":
+                ModuleDto? module = await _context.Modules.Where(_ => _.Id == id).FirstOrDefaultAsync();
+                Validate.ThrowIfNull(module);
+                //TODO : PERCHE L'HO MESSO QUA?
+                break;
+            case "lots":
+                LotDto? lot = await _context.Lots.Where(_ => _.Id == id).FirstOrDefaultAsync();
+                Validate.ThrowIfNull(lot);
+                var lotModel = JsonConvert.DeserializeObject<LotDto>(data.ToString().ThrowIfNull());
+                Validate.ThrowIfNull(lotModel);
+                lot.Code = lotModel.Code;
+                lot.MaterialId = lotModel.MaterialId;
+                break;
+            case "materials":
+                MaterialDto? material = await _context.Materials.Where(_ => _.Id == id).FirstOrDefaultAsync();
+                Validate.ThrowIfNull(material);
+                var materialModel = JsonConvert.DeserializeObject<MaterialDto>(data.ToString().ThrowIfNull());
+                Validate.ThrowIfNull(materialModel);
+                material.Name = materialModel.Name;
+                break;
+            default: throw new Exception("Route not allowed");
+        }
+
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task DeleteData(string apiString, long id)
+    {
+        var type = apiString.Contains("-") ? apiString.Split("-")[0] : apiString;
+
+        switch (type)
+        {
+            case "studios":
+                StudioDto? studio = await _context.Studios.Where(_ => _.Id == id).FirstOrDefaultAsync();
+                Validate.ThrowIfNull(studio);
+                _context.Remove(studio);
+                break;
+            case "colors":
+                ColorDto? color = await _context.Colors.Where(_ => _.Id == id).FirstOrDefaultAsync();
+                Validate.ThrowIfNull(color);
+                _context.Remove(color);
+                break;
+            case "semiproduct":
+                SemiProductDto? semiproduct = await _context.SemiProducts.Where(_ => _.Id == id).FirstOrDefaultAsync();
+                Validate.ThrowIfNull(semiproduct);
+                _context.Remove(semiproduct);
+                break;
+            case "risks":
+                RiskDto? risk = await _context.Risks.Where(_ => _.Id == id).FirstOrDefaultAsync();
+                Validate.ThrowIfNull(risk);
+                _context.Remove(risk);
+                break;
+            case "stages":
+                StageDto? stage = await _context.Stages.Where(_ => _.Id == id).FirstOrDefaultAsync();
+                Validate.ThrowIfNull(stage);
+                _context.Remove(stage);
+                break;
+            case "modules":
+                ModuleDto? module = await _context.Modules.Where(_ => _.Id == id).FirstOrDefaultAsync();
+                Validate.ThrowIfNull(module);
+                //TODO : PERCHE L'HO MESSO QUA?
+                break;
+            case "lots":
+                LotDto? lot = await _context.Lots.Where(_ => _.Id == id).FirstOrDefaultAsync();
+                Validate.ThrowIfNull(lot);
+                _context.Remove(lot);
+                break;
+            case "materials":
+                MaterialDto? material = await _context.Materials.Where(_ => _.Id == id).FirstOrDefaultAsync();
+                Validate.ThrowIfNull(material);
+                _context.Remove(material);
                 break;
             default: throw new Exception("Route not allowed");
         }

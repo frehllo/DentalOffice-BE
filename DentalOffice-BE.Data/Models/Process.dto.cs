@@ -20,7 +20,7 @@ public class ProcessDto : BaseTableKey<long>
     public long EnamelMaterialId { get; set; }
     public long EnamelLotId { get; set; }
     public long RiskId { get; set; }
-    public string ColorId { get; set; } = null!;
+    public long ColorId { get; set; }
     public ICollection<StageDto>? Stages { get; set; }
     public ModuleDto? Module { get; set; }
     public SemiProductDto? SemiProduct { get; set; }

@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
+using System.Text.Json;
 
 namespace DentalOffice_BE.Data;
 
@@ -40,7 +42,11 @@ public class DBContext : DbContext
     {
         if (!optionsBuilder.IsConfigured)
         {
-            // usato da Microsoft.EntityFrameworkCore.Tools per la gestione migrazioni
+
+#pragma warning disable CS0618 // Il tipo o il membro è obsoleto
+            NpgsqlConnection.GlobalTypeMapper.EnableDynamicJson();
+#pragma warning restore CS0618 // Il tipo o il membro è obsoleto
+
             optionsBuilder.UseNpgsql("Host=localhost;Database=DentalStudio;Username=postgres;Password=narcis_buzatu");
         }
 

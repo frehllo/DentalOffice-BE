@@ -11,11 +11,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace DentalOffice_BE.Data;
 
 [Table("colors", Schema = ContextSchemaConstants.main)]
-public class ColorDto : BaseTableKey<string>
+public class ColorDto : BaseTableKey<long>
 {
     public string Code { get; set; } = null!;
-
-    public ICollection<LotDto>? Lot { get; set; }
+    public ICollection<LotDto>? Lots { get; set; }
     public ICollection<ProcessDto>? Processes { get; set; }
 }
 
@@ -23,8 +22,8 @@ public class ColorDtoConfiguration : IEntityTypeConfiguration<ColorDto>
 {
     public void Configure(EntityTypeBuilder<ColorDto> builder)
     {
-        builder.HasAlternateKey(e => e.Id);
-        builder.HasKey(e => e.Code);
+        builder.HasKey(e => e.Id);
+        builder.HasIndex(e => e.Code).IsUnique();
         builder.Property(e => e.Id)
             .HasColumnName("id");
         builder.Property(e => e.Code)

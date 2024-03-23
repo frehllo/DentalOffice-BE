@@ -13,7 +13,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DentalOffice_BE.Data.Migrations
 {
     [DbContext(typeof(DBContext))]
-    [Migration("20240319220225_0")]
+    [Migration("20240323141929_0")]
     partial class _0
     {
         /// <inheritdoc />
@@ -28,14 +28,17 @@ namespace DentalOffice_BE.Data.Migrations
 
             modelBuilder.Entity("DentalOffice_BE.Data.ColorDto", b =>
                 {
-                    b.Property<string>("Code")
-                        .HasColumnType("text")
-                        .HasColumnName("code");
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
 
-                    b.Property<string>("Id")
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Code")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("id");
+                        .HasColumnName("code");
 
                     b.Property<DateTime>("InsertDate")
                         .ValueGeneratedOnAdd()
@@ -49,9 +52,10 @@ namespace DentalOffice_BE.Data.Migrations
                         .HasColumnName("update_date")
                         .HasDefaultValueSql("NOW()");
 
-                    b.HasKey("Code");
+                    b.HasKey("Id");
 
-                    b.HasAlternateKey("Id");
+                    b.HasIndex("Code")
+                        .IsUnique();
 
                     b.ToTable("colors", "main");
                 });
@@ -180,8 +184,8 @@ namespace DentalOffice_BE.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("ColorDtoCode")
-                        .HasColumnType("text");
+                    b.Property<long?>("ColorDtoId")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime>("InsertDate")
                         .ValueGeneratedOnAdd()
@@ -201,7 +205,7 @@ namespace DentalOffice_BE.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ColorDtoCode");
+                    b.HasIndex("ColorDtoId");
 
                     b.HasIndex("MaterialId");
 
@@ -343,12 +347,11 @@ namespace DentalOffice_BE.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<string>("ColorDtoCode")
-                        .HasColumnType("text");
+                    b.Property<long?>("ColorDtoId")
+                        .HasColumnType("bigint");
 
-                    b.Property<string>("ColorId")
-                        .IsRequired()
-                        .HasColumnType("text")
+                    b.Property<long>("ColorId")
+                        .HasColumnType("bigint")
                         .HasColumnName("color_id");
 
                     b.Property<long>("DentinLotId")
@@ -406,7 +409,7 @@ namespace DentalOffice_BE.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ColorDtoCode");
+                    b.HasIndex("ColorDtoId");
 
                     b.HasIndex("ColorId");
 
@@ -662,8 +665,8 @@ namespace DentalOffice_BE.Data.Migrations
             modelBuilder.Entity("DentalOffice_BE.Data.LotDto", b =>
                 {
                     b.HasOne("DentalOffice_BE.Data.ColorDto", null)
-                        .WithMany("Lot")
-                        .HasForeignKey("ColorDtoCode");
+                        .WithMany("Lots")
+                        .HasForeignKey("ColorDtoId");
 
                     b.HasOne("DentalOffice_BE.Data.MaterialDto", "Material")
                         .WithMany()
@@ -700,7 +703,7 @@ namespace DentalOffice_BE.Data.Migrations
                 {
                     b.HasOne("DentalOffice_BE.Data.ColorDto", null)
                         .WithMany("Processes")
-                        .HasForeignKey("ColorDtoCode");
+                        .HasForeignKey("ColorDtoId");
 
                     b.HasOne("DentalOffice_BE.Data.ColorDto", "Color")
                         .WithMany()
@@ -851,6 +854,11 @@ namespace DentalOffice_BE.Data.Migrations
                                                 .HasColumnType("text")
                                                 .HasAnnotation("Relational:JsonPropertyName", "className");
 
+                                            b3.Property<string>("Key")
+                                                .IsRequired()
+                                                .HasColumnType("text")
+                                                .HasAnnotation("Relational:JsonPropertyName", "key");
+
                                             b3.Property<string>("Type")
                                                 .IsRequired()
                                                 .HasColumnType("text")
@@ -993,7 +1001,7 @@ namespace DentalOffice_BE.Data.Migrations
 
             modelBuilder.Entity("DentalOffice_BE.Data.ColorDto", b =>
                 {
-                    b.Navigation("Lot");
+                    b.Navigation("Lots");
 
                     b.Navigation("Processes");
                 });

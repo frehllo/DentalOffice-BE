@@ -65,17 +65,6 @@ public class SectionDtoConfiguration : IEntityTypeConfiguration<SectionDto>
                         });
                     });
                 });
-                //d.Property(_ => _.TableHeaderFields)
-                //    .HasConversion(
-                //        v => JsonConvert.SerializeObject(v),
-                //        v => JsonConvert.DeserializeObject<TableHeaderField[]>(v)
-                //    );
-                //d.Property(_ => _.IconName);
-                //d.Property(_ => _.FormConfiguration)
-                //    .HasConversion(
-                //        v => JsonConvert.SerializeObject(v),
-                //        v => JsonConvert.DeserializeObject<FormGroupConfiguration[]>(v)
-                //    );
             });
     }
 }

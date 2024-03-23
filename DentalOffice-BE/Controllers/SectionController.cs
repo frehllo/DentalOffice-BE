@@ -29,7 +29,7 @@ public class SectionController(ISectionService _service) : ControllerBase
     }
 
     [HttpGet("data/{id}/{apiString}")]
-    public async Task<dynamic> GetSingleData(string id, string apiString)
+    public async Task<dynamic> GetSingleData(long id, string apiString)
     {
         return await _service.GetSingleData(id, apiString);
     }
@@ -38,5 +38,17 @@ public class SectionController(ISectionService _service) : ControllerBase
     public async Task InsertData(string apiString, [FromBody] object data)
     {
         await _service.InsertData(apiString, data);
+    }
+
+    [HttpPut("data/{apiString}/{id}")]
+    public async Task UpdateData(string apiString, long id,[FromBody] object data)
+    {
+        await _service.UpdateData(apiString, id, data);
+    }
+
+    [HttpDelete("data/{apiString}/{id}")]
+    public async Task DeleteData(string apiString, long id)
+    {
+        await _service.DeleteData(apiString, id);
     }
 }

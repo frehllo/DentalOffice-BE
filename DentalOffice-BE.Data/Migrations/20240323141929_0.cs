@@ -21,15 +21,15 @@ namespace DentalOffice_BE.Data.Migrations
                 schema: "main",
                 columns: table => new
                 {
+                    id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     code = table.Column<string>(type: "text", nullable: false),
                     insert_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "NOW()"),
-                    update_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: true, defaultValueSql: "NOW()"),
-                    id = table.Column<string>(type: "text", nullable: false)
+                    update_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: true, defaultValueSql: "NOW()")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_colors", x => x.code);
-                    table.UniqueConstraint("AK_colors_id", x => x.id);
+                    table.PrimaryKey("PK_colors", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -233,7 +233,7 @@ namespace DentalOffice_BE.Data.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Code = table.Column<string>(type: "text", nullable: false),
                     material_id = table.Column<long>(type: "bigint", nullable: false),
-                    ColorDtoCode = table.Column<string>(type: "text", nullable: true),
+                    ColorDtoId = table.Column<long>(type: "bigint", nullable: true),
                     insert_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "NOW()"),
                     update_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: true, defaultValueSql: "NOW()")
                 },
@@ -241,11 +241,11 @@ namespace DentalOffice_BE.Data.Migrations
                 {
                     table.PrimaryKey("PK_lots", x => x.id);
                     table.ForeignKey(
-                        name: "FK_lots_colors_ColorDtoCode",
-                        column: x => x.ColorDtoCode,
+                        name: "FK_lots_colors_ColorDtoId",
+                        column: x => x.ColorDtoId,
                         principalSchema: "main",
                         principalTable: "colors",
-                        principalColumn: "code");
+                        principalColumn: "id");
                     table.ForeignKey(
                         name: "FK_lots_materials_material_id",
                         column: x => x.material_id,
@@ -301,8 +301,8 @@ namespace DentalOffice_BE.Data.Migrations
                     enamel_material_id = table.Column<long>(type: "bigint", nullable: false),
                     enamel_lot_id = table.Column<long>(type: "bigint", nullable: false),
                     risk_id = table.Column<long>(type: "bigint", nullable: false),
-                    color_id = table.Column<string>(type: "text", nullable: false),
-                    ColorDtoCode = table.Column<string>(type: "text", nullable: true),
+                    color_id = table.Column<long>(type: "bigint", nullable: false),
+                    ColorDtoId = table.Column<long>(type: "bigint", nullable: true),
                     ModuleDtoId = table.Column<long>(type: "bigint", nullable: true),
                     RiskDtoId = table.Column<long>(type: "bigint", nullable: true),
                     insert_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "NOW()"),
@@ -312,17 +312,17 @@ namespace DentalOffice_BE.Data.Migrations
                 {
                     table.PrimaryKey("PK_Processes", x => x.id);
                     table.ForeignKey(
-                        name: "FK_Processes_colors_ColorDtoCode",
-                        column: x => x.ColorDtoCode,
+                        name: "FK_Processes_colors_ColorDtoId",
+                        column: x => x.ColorDtoId,
                         principalSchema: "main",
                         principalTable: "colors",
-                        principalColumn: "code");
+                        principalColumn: "id");
                     table.ForeignKey(
                         name: "FK_Processes_colors_color_id",
                         column: x => x.color_id,
                         principalSchema: "main",
                         principalTable: "colors",
-                        principalColumn: "code",
+                        principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Processes_lots_dentin_lot_id",
@@ -426,6 +426,13 @@ namespace DentalOffice_BE.Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_colors_code",
+                schema: "main",
+                table: "colors",
+                column: "code",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_customers_name",
                 schema: "main",
                 table: "customers",
@@ -452,10 +459,10 @@ namespace DentalOffice_BE.Data.Migrations
                 column: "module_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_lots_ColorDtoCode",
+                name: "IX_lots_ColorDtoId",
                 schema: "main",
                 table: "lots",
-                column: "ColorDtoCode");
+                column: "ColorDtoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_lots_material_id",
@@ -495,9 +502,9 @@ namespace DentalOffice_BE.Data.Migrations
                 column: "color_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Processes_ColorDtoCode",
+                name: "IX_Processes_ColorDtoId",
                 table: "Processes",
-                column: "ColorDtoCode");
+                column: "ColorDtoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Processes_dentin_lot_id",
