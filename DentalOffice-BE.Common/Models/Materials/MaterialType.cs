@@ -8,9 +8,9 @@ namespace DentalOffice_BE.Common.Models;
 
 public enum MaterialType
 {
-    Metal = 0,
-	Dentin = 1,
-	Enamel = 2,
-	AcetalResin = 3,
-	PolycarbonateDisc = 4
+    Metal = 1,
+	Dentin = 2,
+	Enamel = 3,
+	AcetalResin = 4,
+	PolycarbonateDisc = 5
 }

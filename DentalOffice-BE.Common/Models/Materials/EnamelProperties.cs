@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Newtonsoft.Json;
 
 namespace DentalOffice_BE.Common.Models;
 
 public class EnamelProperties : MaterialProperties
 {
-    public IEnumerable<long>? DentinColorIds { get; set; }
+    [JsonProperty("dentinColorsIds")]
+    public long[]? dentinColorsIds { get; set; }
 }

@@ -1,4 +1,5 @@
 ﻿using DentalOffice_BE.Common;
+using DentalOffice_BE.Common.Models;
 using DentalOffice_BE.Common.Utility;
 using DentalOffice_BE.Data;
 using DentalOffice_BE.Services.Interfaces;
@@ -53,6 +54,26 @@ public class SectionService(DBContext _context) : ISectionService
                 }
             }
         }
+
+        if (data!.ApiString is not null && data.ApiString.Contains("materials"))
+        {
+            string[] parts = data.ApiString.Split("-");
+            if (parts.Length > 1)
+            {
+                var colors = await _context.Colors.ToListAsync();
+
+                foreach (var color in colors)
+                {
+                    data?.Configuration?.FormConfiguration?.FirstOrDefault()?.FieldGroup?.FirstOrDefault(_ => _.Key == "materialProperties")?.FieldGroup?.FirstOrDefault(_ => _.Key == "color" || _.Key == "colors" || _.Key == "dentinColorsIds")?.Props?.Options?.Add(new FormFieldPropsOption
+                    {
+                        Label = color.Code,
+                        Value = color.Id
+                    });
+                }
+            }
+        }
+
+        
 
         Validate.ThrowIfNull(data);
 
@@ -188,10 +209,17 @@ public class SectionService(DBContext _context) : ISectionService
                 _context.Lots.Add(lot);
                 break;
             case "materials":
-                MaterialDto? material = JsonConvert.DeserializeObject<MaterialDto>(data.ToString().ThrowIfNull());
-                Validate.ThrowIfNull(material);
-                material.MaterialTypeId = id;
-                _context.Materials.Add(material);
+                MaterialDto? materialDto = JsonConvert.DeserializeObject<MaterialDto>(data.ToString().ThrowIfNull());
+                Validate.ThrowIfNull(materialDto);
+                if(materialDto.MaterialProperties != null)
+                {
+                    if(id == (long)MaterialType.Enamel)
+                    {
+                        materialDto.MaterialProperties = JsonConvert.DeserializeObject<EnamelProperties>(materialDto.MaterialProperties.ToString());
+                    }
+                }
+                materialDto.MaterialTypeId = id;
+                _context.Materials.Add(materialDto);
                 break;
             default: throw new Exception("Route not allowed");
         }
@@ -264,6 +292,13 @@ public class SectionService(DBContext _context) : ISectionService
                 Validate.ThrowIfNull(material);
                 var materialModel = JsonConvert.DeserializeObject<MaterialDto>(data.ToString().ThrowIfNull());
                 Validate.ThrowIfNull(materialModel);
+                if (materialModel.MaterialProperties != null)
+                {
+                    if (id == (long)MaterialType.Enamel)
+                    {
+                        material.MaterialProperties = JsonConvert.DeserializeObject<EnamelProperties>(materialModel.MaterialProperties.ToString());
+                    }
+                }
                 material.Name = materialModel.Name;
                 break;
             default: throw new Exception("Route not allowed");

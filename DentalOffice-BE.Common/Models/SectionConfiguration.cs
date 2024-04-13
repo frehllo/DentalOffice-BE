@@ -39,6 +39,8 @@ public class FormFieldConfiguration
     public string? ClassName { get; set; }
     [JsonPropertyName("props")]
     public FormFieldProps? Props { get; set; } = null!;
+    [JsonPropertyName("fieldGroup")]
+    public ICollection<FormFieldConfiguration>? FieldGroup { get; set; } = null!;
 }
 
 public class FormFieldProps

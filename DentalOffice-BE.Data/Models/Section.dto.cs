@@ -59,6 +59,14 @@ public class SectionDtoConfiguration : IEntityTypeConfiguration<SectionDto>
                 {
                     a.OwnsMany(a => a.FieldGroup, b =>
                     {
+                        b.OwnsMany(b => b.FieldGroup, c =>
+                        {
+                            c.OwnsOne(c => c.Props, e =>
+                            {
+                                e.OwnsMany(e => e.Options);
+                            });
+                        });
+
                         b.OwnsOne(b => b.Props, c =>
                         {
                             c.OwnsMany(c => c.Options);

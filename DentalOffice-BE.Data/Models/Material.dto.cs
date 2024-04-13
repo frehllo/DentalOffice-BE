@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using DentalOffice_BE.Common;
 using System.ComponentModel.DataAnnotations.Schema;
 using System;
+using System.Text.Json.Serialization;
 
 namespace DentalOffice_BE.Data;
 
@@ -13,7 +14,8 @@ public class MaterialDto : BaseTableKey<long>
     public string Name { get; set; } = null!;
     public long MaterialTypeId { get; set; }
     public MaterialTypeDto? MaterialType { get; set; }
-    public MaterialProperties? MaterialProperties { get; set; } = new MaterialProperties();
+    [JsonPropertyName("materialProperties")]
+    public dynamic? MaterialProperties { get; set; }
 }
 
 public class MaterialDtoConfiguration : IEntityTypeConfiguration<MaterialDto>

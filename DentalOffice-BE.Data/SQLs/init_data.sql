@@ -168,15 +168,21 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
                         "label":"Nome",
                         "required":true
                     }
-                }, 
+                },
                 {
-                    "key": "colors",
-                    "type": "select",
-                    "props" : {
-                        "label" : "Colori Dentina",
-                        "multiple" : true,
-                        "options" : []
-                    }
+                    "key" : "materialProperties",
+                    "fieldGroup" : [
+                        {
+                            "key":"dentinColorsIds",
+                            "type":"multi-select",
+                            "className":"col-12",
+                            "props":{
+                                "label":"Colori Dentina",
+                                "required":true,
+                                "options": []
+                            }
+                        }
+                    ]
                 }
             ]
         }
