@@ -1,0 +1,261 @@
+{
+  "PersonalDataForm": [
+    {
+      "fieldGroupClassName": "row",
+      "fieldGroup": [
+        {
+          "type": "section-line",
+          "props": {
+            "label": "Informazioni generali"
+          }
+        },
+        {
+          "key": "customerName",
+          "className": "col-lg-7 col-sm-12",
+          "type": "input",
+          "props": {
+            "label": "Nome cliente",
+            "required": true
+          }
+        },
+        {
+          "key": "studioId",
+          "className": "col-lg-6 col-sm-12",
+          "type": "select",
+          "props": {
+            "label": "Studio dentistico",
+            "required": true,
+            "options": [
+            ]
+          }
+        },
+        {
+          "key": "prescriptionDate",
+          "className": "col-lg-3 col-sm-12",
+          "type": "datepicker",
+          "props": {
+            "label": "Data prescrizione"
+          }
+        },
+        {
+          "key": "deliveryDate",
+          "className": "col-lg-3 col-sm-12",
+          "type": "datepicker",
+          "props": {
+            "label": "Data di consegna prevista"
+          }
+        },
+        {
+          "key": "description",
+          "className": "col-12",
+          "type": "textarea",
+          "props": {
+            "label": "Descrizione",
+            "rows": 2
+          }
+        }
+      ]
+    }
+  ],
+  "ProcessesForm": [
+    {
+      "fieldGroupClassName": "row",
+      "fieldGroup": [
+        {
+          "type": "section-line",
+          "props": {
+            "label": "Processi"
+          }
+        },
+        {
+          "key": "semiproductId",
+          "className": "col-12",
+          "type": "select",
+          "props": {
+            "label": "Semilavorazione",
+            "required": false,
+            "options": [
+              {
+                "value": 1,
+                "label": "Semilavorazione 1"
+              },
+              {
+                "value": 2,
+                "label": "Semilavorazione 2"
+              }
+            ]
+          }
+        },
+        {
+          "key": "metalMaterialId",
+          "className": "col-lg-6 col-sm-12",
+          "type": "select",
+          "props": {
+            "label": "Metallo",
+            "required": false,
+            "options": [
+              {
+                "value": 1,
+                "label": "Metallo 1"
+              },
+              {
+                "value": 2,
+                "label": "Metallo 2"
+              }
+            ]
+          }
+        },
+        {
+          "key": "metalLotId",
+          "className": "col-lg-6 col-sm-12",
+          "type": "select",
+          "props": {
+            "label": "N�Lotto Metallo",
+            "required": false,
+            "options": [
+              {
+                "value": 1,
+                "label": "ASD423R34FWE"
+              },
+              {
+                "value": 2,
+                "label": "F234DE234FWE"
+              }
+            ]
+          }
+        },
+        {
+          "key": "dentinMaterialId",
+          "className": "col-lg-6 col-sm-12",
+          "type": "select",
+          "props": {
+            "label": "Rivestimento estetico",
+            "required": false,
+            "options": [
+              {
+                "value": 1,
+                "label": "Rivestimento 1"
+              },
+              {
+                "value": 2,
+                "label": "Rivestimento 2"
+              }
+            ]
+          }
+        },
+        {
+          "key": "colorId",
+          "className": "col-lg-6 col-sm-12",
+          "type": "select",
+          "props": {
+            "label": "Colore",
+            "required": false,
+            "options": [
+              {
+                "value": 1,
+                "label": "A1"
+              },
+              {
+                "value": 2,
+                "label": "B2"
+              }
+            ]
+          }
+        },
+        {
+          "key": "dentinLotId",
+          "className": "col-lg-6 col-sm-12",
+          "type": "select",
+          "props": {
+            "label": "N�Lotto Dentina",
+            "required": false,
+            "options": [
+              {
+                "value": 1,
+                "label": "ASD423R23D2D"
+              },
+              {
+                "value": 2,
+                "label": "21FS23R3423E"
+              }
+            ]
+          }
+        },
+        {
+          "key": "enamelLotId",
+          "className": "col-lg-6 col-sm-12",
+          "type": "select",
+          "props": {
+            "label": "N�Lotto Smalto",
+            "required": false,
+            "options": [
+              {
+                "value": 1,
+                "label": "Rivestimento 1"
+              },
+              {
+                "value": 2,
+                "label": "Rivestimento 2"
+              }
+            ]
+          }
+        },
+        {
+          "key": "riskId",
+          "className": "col-12",
+          "type": "select",
+          "props": {
+            "label": "Rischi",
+            "required": false,
+            "options": [
+              {
+                "value": 1,
+                "label": "Rishio 1"
+              },
+              {
+                "value": 2,
+                "label": "Rischio 2"
+              }
+            ]
+          }
+        },
+        {
+          "key": "stageIds",
+          "type": "select",
+          "className": "col-12",
+          "props": {
+            "label": "Lavorazioni",
+            "multiple": true,
+            "options": [
+              {
+                "value": 1,
+                "label": "Lavorazione 1"
+              },
+              {
+                "value": 2,
+                "label": "Lavorazione 2"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "Grid":
+  {
+    "colDefs": [
+      {
+        "field": "metalMaterial.name",
+        "headerName": "Metal"
+      },
+      {
+        "field": "dentinMaterial.name",
+        "headerName": "Dentin"
+      },
+      {
+        "field": "color.name",
+        "headerName": "Color"
+      }
+    ]
+  }
+}

@@ -224,7 +224,8 @@ namespace DentalOffice_BE.Data.Migrations
                         .HasDefaultValueSql("NOW()");
 
                     b.Property<object>("MaterialProperties")
-                        .HasColumnType("jsonb");
+                        .HasColumnType("jsonb")
+                        .HasAnnotation("Relational:JsonPropertyName", "materialProperties");
 
                     b.Property<long>("MaterialTypeId")
                         .HasColumnType("bigint")
@@ -299,7 +300,7 @@ namespace DentalOffice_BE.Data.Migrations
                         .HasColumnType("text")
                         .HasColumnName("customer_name");
 
-                    b.Property<DateTime>("DeliveryDate")
+                    b.Property<DateTime?>("DeliveryDate")
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("delivery_date");
 
@@ -313,7 +314,7 @@ namespace DentalOffice_BE.Data.Migrations
                         .HasColumnName("insert_date")
                         .HasDefaultValueSql("NOW()");
 
-                    b.Property<DateTime>("PrescriptionDate")
+                    b.Property<DateTime?>("PrescriptionDate")
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("prescription_date");
 
@@ -648,7 +649,7 @@ namespace DentalOffice_BE.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("DentalOffice_BE.Data.ModuleDto", "Module")
-                        .WithMany("Instances")
+                        .WithMany("DocumentInstances")
                         .HasForeignKey("ModuleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1130,7 +1131,7 @@ namespace DentalOffice_BE.Data.Migrations
 
             modelBuilder.Entity("DentalOffice_BE.Data.ModuleDto", b =>
                 {
-                    b.Navigation("Instances");
+                    b.Navigation("DocumentInstances");
 
                     b.Navigation("Processes");
                 });

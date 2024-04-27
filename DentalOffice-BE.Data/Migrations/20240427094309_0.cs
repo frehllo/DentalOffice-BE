@@ -204,8 +204,8 @@ namespace DentalOffice_BE.Data.Migrations
                     id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     customer_name = table.Column<string>(type: "text", nullable: false),
-                    prescription_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    delivery_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    prescription_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    delivery_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     description = table.Column<string>(type: "text", nullable: true),
                     studio_id = table.Column<long>(type: "bigint", nullable: false),
                     insert_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "NOW()"),

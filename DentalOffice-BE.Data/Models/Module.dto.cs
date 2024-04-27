@@ -14,13 +14,13 @@ namespace DentalOffice_BE.Data;
 public class ModuleDto : BaseTableKey<long>
 {
     public string CustomerName { get; set; } = null!;
-    public DateTime PrescriptionDate { get; set; }
-    public DateTime DeliveryDate { get; set; }
+    public DateTime? PrescriptionDate { get; set; } = null;
+    public DateTime? DeliveryDate { get; set; } = null;
     public string? Description { get; set; }
     public long StudioId { get; set; }
     public StudioDto? Studio { get; set; }
     public ICollection<ProcessDto>? Processes { get; set; }
-    public ICollection<DocumentInstanceDto>? Instances { get; }
+    public ICollection<DocumentInstanceDto>? DocumentInstances { get; }
 
 }
 

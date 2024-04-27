@@ -44,7 +44,7 @@ public class DocumentInstanceDtoConfiguration : IEntityTypeConfiguration<Documen
 
         builder
             .HasOne(e => e.Module)
-            .WithMany(a => a.Instances)
+            .WithMany(a => a.DocumentInstances)
             .HasForeignKey(e => e.ModuleId);
     }
 }

@@ -10,6 +10,7 @@ public static class ServiceCollectionExtensions
     public static void AddServiceData(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<ISectionService, SectionService>();
+        services.AddScoped<IModuleService, ModuleService>();
 
         services.AddDbContext<DBContext>(options => options.UseNpgsql(configuration.GetConnectionString("PostgreSQL")));
     }

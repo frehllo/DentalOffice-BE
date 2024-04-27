@@ -17,4 +17,6 @@
     <ProjectReference Include="..\DentalOffice-BE.Data\DentalOffice-BE.Data.csproj" />
   </ItemGroup>
 
+  <ProjectExtensions><VisualStudio><UserProperties json_4module_1json__JsonSchema="https://json.schemastore.org/appsettings.json" /></VisualStudio></ProjectExtensions>
+
 </Project>
