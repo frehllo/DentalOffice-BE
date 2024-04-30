@@ -12,5 +12,5 @@ public class ModuleFormConfiguration
 {
     public ICollection<FormFieldConfiguration> PersonalDataForm { get; set; } = null!;
     public ICollection<FormFieldConfiguration> ProcessesForm { get; set; } = null!;
-    public object Grid { get; set; } = null!;
+    public ICollection<TableHeaderField> Grid { get; set; } = null!;
 }

@@ -428,6 +428,9 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
         },
         {
             "field":"code"
+        },
+        {
+            "field":"color.code"
         }
     ],
     "formConfiguration":
@@ -454,7 +457,7 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
                     }
                 },
                 {
-                    "key":"color",
+                    "key":"colorId",
                     "type":"select",
                     "className":"col-12",
                     "props":{

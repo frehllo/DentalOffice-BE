@@ -232,7 +232,7 @@ namespace DentalOffice_BE.Data.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Code = table.Column<string>(type: "text", nullable: false),
                     material_id = table.Column<long>(type: "bigint", nullable: false),
-                    ColorDtoId = table.Column<long>(type: "bigint", nullable: true),
+                    color_id = table.Column<long>(type: "bigint", nullable: true),
                     insert_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "NOW()"),
                     update_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: true, defaultValueSql: "NOW()")
                 },
@@ -240,8 +240,8 @@ namespace DentalOffice_BE.Data.Migrations
                 {
                     table.PrimaryKey("PK_lots", x => x.id);
                     table.ForeignKey(
-                        name: "FK_lots_colors_ColorDtoId",
-                        column: x => x.ColorDtoId,
+                        name: "FK_lots_colors_color_id",
+                        column: x => x.color_id,
                         principalSchema: "main",
                         principalTable: "colors",
                         principalColumn: "id");
@@ -458,10 +458,10 @@ namespace DentalOffice_BE.Data.Migrations
                 column: "module_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_lots_ColorDtoId",
+                name: "IX_lots_color_id",
                 schema: "main",
                 table: "lots",
-                column: "ColorDtoId");
+                column: "color_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_lots_material_id",

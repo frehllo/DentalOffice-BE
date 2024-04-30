@@ -32,4 +32,10 @@ public class ModuleController(IModuleService _service) : ControllerBase
     {
         return await _service.Insert(model);
     }
+
+    [HttpPut("{id}")]
+    public async Task<ModuleDto> Update(long id, ModuleDto model)
+    {
+        return await _service.Update(id, model);
+    }
 }

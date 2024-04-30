@@ -14,5 +14,5 @@ public interface IModuleService
     Task<IEnumerable<ModuleDto>> GetList();
     Task<ModuleDto> Get(long id);
     Task<ModuleDto> Insert(ModuleDto model);
-    Task<ModuleDto> Update(ModuleDto model);
+    Task<ModuleDto> Update(long id, ModuleDto model);
 }

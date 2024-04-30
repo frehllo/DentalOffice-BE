@@ -16,8 +16,10 @@ public class TableHeaderField
 {
     [JsonPropertyName("field")]
     public string Field { get; set; } = null!;
+    [JsonPropertyName("headerName")]
+    public string? HeaderName { get; set; } = null!;
     [JsonPropertyName("cellRenderer")]
-    public string CellRenderer { get; set; } = null!;
+    public string? CellRenderer { get; set; } = null!;
 }
 
 public class FormGroupConfiguration

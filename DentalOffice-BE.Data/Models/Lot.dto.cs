@@ -15,6 +15,8 @@ public class LotDto : BaseTableKey<long>
 {
     public string Code { get; set; } = null!;
     public long MaterialId { get; set; }
+    public long? ColorId { get; set; }
+    public ColorDto? Color { get; set; }
     public MaterialDto? Material { get; set; }
 
 }
@@ -28,6 +30,11 @@ public class LotDtoConfiguration : IEntityTypeConfiguration<LotDto>
             .HasColumnName("id");
         builder.Property(e => e.MaterialId)
             .HasColumnName("material_id");
+        builder.Property(e => e.ColorId)
+            .HasColumnName("color_id");
+        builder.HasOne(e => e.Color)
+            .WithMany(e => e.Lots)
+            .HasForeignKey(e => e.ColorId);
         builder.Property(e => e.InsertDate)
             .HasColumnName("insert_date")
             .HasDefaultValueSql("NOW()");

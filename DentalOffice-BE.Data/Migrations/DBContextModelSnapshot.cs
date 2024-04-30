@@ -180,8 +180,9 @@ namespace DentalOffice_BE.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<long?>("ColorDtoId")
-                        .HasColumnType("bigint");
+                    b.Property<long?>("ColorId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("color_id");
 
                     b.Property<DateTime>("InsertDate")
                         .ValueGeneratedOnAdd()
@@ -201,7 +202,7 @@ namespace DentalOffice_BE.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ColorDtoId");
+                    b.HasIndex("ColorId");
 
                     b.HasIndex("MaterialId");
 
@@ -661,15 +662,17 @@ namespace DentalOffice_BE.Data.Migrations
 
             modelBuilder.Entity("DentalOffice_BE.Data.LotDto", b =>
                 {
-                    b.HasOne("DentalOffice_BE.Data.ColorDto", null)
-                        .WithMany("Lots")
-                        .HasForeignKey("ColorDtoId");
+                    b.HasOne("DentalOffice_BE.Data.ColorDto", "Color")
+                        .WithMany()
+                        .HasForeignKey("ColorId");
 
                     b.HasOne("DentalOffice_BE.Data.MaterialDto", "Material")
                         .WithMany()
                         .HasForeignKey("MaterialId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Color");
 
                     b.Navigation("Material");
                 });
@@ -1068,7 +1071,6 @@ namespace DentalOffice_BE.Data.Migrations
                                         .HasColumnType("integer");
 
                                     b2.Property<string>("CellRenderer")
-                                        .IsRequired()
                                         .HasColumnType("text")
                                         .HasAnnotation("Relational:JsonPropertyName", "cellRenderer");
 
@@ -1076,6 +1078,10 @@ namespace DentalOffice_BE.Data.Migrations
                                         .IsRequired()
                                         .HasColumnType("text")
                                         .HasAnnotation("Relational:JsonPropertyName", "field");
+
+                                    b2.Property<string>("HeaderName")
+                                        .HasColumnType("text")
+                                        .HasAnnotation("Relational:JsonPropertyName", "headerName");
 
                                     b2.HasKey("SectionConfigurationSectionDtoId", "Id");
 
@@ -1114,8 +1120,6 @@ namespace DentalOffice_BE.Data.Migrations
 
             modelBuilder.Entity("DentalOffice_BE.Data.ColorDto", b =>
                 {
-                    b.Navigation("Lots");
-
                     b.Navigation("Processes");
                 });
 

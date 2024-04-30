@@ -24,6 +24,7 @@ public class ColorDtoConfiguration : IEntityTypeConfiguration<ColorDto>
     {
         builder.HasKey(e => e.Id);
         builder.HasIndex(e => e.Code).IsUnique();
+        builder.Ignore(e => e.Lots);
         builder.Property(e => e.Id)
             .HasColumnName("id");
         builder.Property(e => e.Code)

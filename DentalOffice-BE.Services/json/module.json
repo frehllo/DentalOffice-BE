@@ -53,6 +53,12 @@
             "label": "Descrizione",
             "rows": 2
           }
+        },
+        {
+          "type": "section-line",
+          "props": {
+            "label": "Processi"
+          }
         }
       ]
     }
@@ -62,12 +68,6 @@
       "fieldGroupClassName": "row",
       "fieldGroup": [
         {
-          "type": "section-line",
-          "props": {
-            "label": "Processi"
-          }
-        },
-        {
           "key": "semiproductId",
           "className": "col-12",
           "type": "select",
@@ -75,14 +75,6 @@
             "label": "Semilavorazione",
             "required": false,
             "options": [
-              {
-                "value": 1,
-                "label": "Semilavorazione 1"
-              },
-              {
-                "value": 2,
-                "label": "Semilavorazione 2"
-              }
             ]
           }
         },
@@ -94,14 +86,6 @@
             "label": "Metallo",
             "required": false,
             "options": [
-              {
-                "value": 1,
-                "label": "Metallo 1"
-              },
-              {
-                "value": 2,
-                "label": "Metallo 2"
-              }
             ]
           }
         },
@@ -110,17 +94,9 @@
           "className": "col-lg-6 col-sm-12",
           "type": "select",
           "props": {
-            "label": "N�Lotto Metallo",
+            "label": "N Lotto Metallo",
             "required": false,
             "options": [
-              {
-                "value": 1,
-                "label": "ASD423R34FWE"
-              },
-              {
-                "value": 2,
-                "label": "F234DE234FWE"
-              }
             ]
           }
         },
@@ -132,14 +108,6 @@
             "label": "Rivestimento estetico",
             "required": false,
             "options": [
-              {
-                "value": 1,
-                "label": "Rivestimento 1"
-              },
-              {
-                "value": 2,
-                "label": "Rivestimento 2"
-              }
             ]
           }
         },
@@ -151,14 +119,6 @@
             "label": "Colore",
             "required": false,
             "options": [
-              {
-                "value": 1,
-                "label": "A1"
-              },
-              {
-                "value": 2,
-                "label": "B2"
-              }
             ]
           }
         },
@@ -167,17 +127,9 @@
           "className": "col-lg-6 col-sm-12",
           "type": "select",
           "props": {
-            "label": "N�Lotto Dentina",
+            "label": "N Lotto Dentina",
             "required": false,
             "options": [
-              {
-                "value": 1,
-                "label": "ASD423R23D2D"
-              },
-              {
-                "value": 2,
-                "label": "21FS23R3423E"
-              }
             ]
           }
         },
@@ -186,17 +138,9 @@
           "className": "col-lg-6 col-sm-12",
           "type": "select",
           "props": {
-            "label": "N�Lotto Smalto",
+            "label": "N Lotto Smalto",
             "required": false,
             "options": [
-              {
-                "value": 1,
-                "label": "Rivestimento 1"
-              },
-              {
-                "value": 2,
-                "label": "Rivestimento 2"
-              }
             ]
           }
         },
@@ -208,14 +152,6 @@
             "label": "Rischi",
             "required": false,
             "options": [
-              {
-                "value": 1,
-                "label": "Rishio 1"
-              },
-              {
-                "value": 2,
-                "label": "Rischio 2"
-              }
             ]
           }
         },
@@ -227,35 +163,24 @@
             "label": "Lavorazioni",
             "multiple": true,
             "options": [
-              {
-                "value": 1,
-                "label": "Lavorazione 1"
-              },
-              {
-                "value": 2,
-                "label": "Lavorazione 2"
-              }
             ]
           }
         }
       ]
     }
   ],
-  "Grid":
-  {
-    "colDefs": [
-      {
-        "field": "metalMaterial.name",
-        "headerName": "Metal"
-      },
-      {
-        "field": "dentinMaterial.name",
-        "headerName": "Dentin"
-      },
-      {
-        "field": "color.name",
-        "headerName": "Color"
-      }
-    ]
-  }
+  "Grid":[
+    {
+      "field": "metalMaterial.name",
+      "headerName": "Metal"
+    },
+    {
+      "field": "dentinMaterial.name",
+      "headerName": "Dentin"
+    },
+    {
+      "field": "color.name",
+      "headerName": "Color"
+    }
+  ]
 }

@@ -52,6 +52,20 @@ public class SectionService(DBContext _context) : ISectionService
                         Value = material.Value
                     });
                 }
+
+                if (data?.Configuration?.FormConfiguration?.FirstOrDefault()?.FieldGroup?.FirstOrDefault(_ => _.Key == "colorId") != null)
+                {
+                    var colors = await _context.Colors.OrderByDescending(_ => _.UpdateDate).ToDictionaryAsync(_ => _.Code, _ => _.Id);
+
+                    foreach (var c in colors)
+                    {
+                        data?.Configuration?.FormConfiguration?.FirstOrDefault()?.FieldGroup?.FirstOrDefault(_ => _.Key == "colorId")?.Props?.Options?.Add(new FormFieldPropsOption
+                        {
+                            Label = c.Key,
+                            Value = c.Value
+                        });
+                    }
+                }
             }
         }
 
@@ -148,7 +162,7 @@ public class SectionService(DBContext _context) : ISectionService
             if (parts.Length > 1)
             {
                 long type = long.Parse(parts[1]);
-                return _context.Lots.AsQueryable().Include(_ => _.Material).Where(_ => _.Material != null && _.Material.MaterialTypeId == type);
+                return _context.Lots.AsQueryable().Include(_ => _.Material).Include(_ => _.Color).Where(_ => _.Material != null && _.Material.MaterialTypeId == type);
             }
         }
 
@@ -183,7 +197,7 @@ public class SectionService(DBContext _context) : ISectionService
                 Validate.ThrowIfNull(color);
                 _context.Colors.Add(color);
                 break;
-            case "semiproduct":
+            case "semiproducts":
                 SemiProductDto? semiproduct = JsonConvert.DeserializeObject<SemiProductDto>(data.ToString().ThrowIfNull());
                 Validate.ThrowIfNull(semiproduct);
                 _context.SemiProducts.Add(semiproduct);
@@ -253,7 +267,7 @@ public class SectionService(DBContext _context) : ISectionService
                 Validate.ThrowIfNull(colorModel);
                 color.Code = colorModel.Code;
                 break;
-            case "semiproduct":
+            case "semiproducts":
                 SemiProductDto? semiproduct = await _context.SemiProducts.Where(_ => _.Id == id).FirstOrDefaultAsync();
                 Validate.ThrowIfNull(semiproduct);
                 var semiproductModel =  JsonConvert.DeserializeObject<SemiProductDto>(data.ToString().ThrowIfNull());
@@ -323,7 +337,7 @@ public class SectionService(DBContext _context) : ISectionService
                 Validate.ThrowIfNull(color);
                 _context.Remove(color);
                 break;
-            case "semiproduct":
+            case "semiproducts":
                 SemiProductDto? semiproduct = await _context.SemiProducts.Where(_ => _.Id == id).FirstOrDefaultAsync();
                 Validate.ThrowIfNull(semiproduct);
                 _context.Remove(semiproduct);
