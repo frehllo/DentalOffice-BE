@@ -68,7 +68,7 @@
       "fieldGroupClassName": "row",
       "fieldGroup": [
         {
-          "key": "semiproductId",
+          "key": "semiProductId",
           "className": "col-12",
           "type": "select",
           "props": {
@@ -179,7 +179,7 @@
       "headerName": "Dentin"
     },
     {
-      "field": "color.name",
+      "field": "color.code",
       "headerName": "Color"
     }
   ]

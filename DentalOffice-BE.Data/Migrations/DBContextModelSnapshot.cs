@@ -364,10 +364,6 @@ namespace DentalOffice_BE.Data.Migrations
                         .HasColumnType("bigint")
                         .HasColumnName("enamel_lot_id");
 
-                    b.Property<long>("EnamelMaterialId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("enamel_material_id");
-
                     b.Property<DateTime>("InsertDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
@@ -417,8 +413,6 @@ namespace DentalOffice_BE.Data.Migrations
 
                     b.HasIndex("EnamelLotId");
 
-                    b.HasIndex("EnamelMaterialId");
-
                     b.HasIndex("MetalLotId");
 
                     b.HasIndex("MetalMaterialId");
@@ -433,7 +427,7 @@ namespace DentalOffice_BE.Data.Migrations
 
                     b.HasIndex("SemiProductId");
 
-                    b.ToTable("Processes");
+                    b.ToTable("processes", "main");
                 });
 
             modelBuilder.Entity("DentalOffice_BE.Data.RiskDto", b =>
@@ -638,7 +632,7 @@ namespace DentalOffice_BE.Data.Migrations
 
                     b.HasIndex("StagesId");
 
-                    b.ToTable("processes_stages");
+                    b.ToTable("processes_stages", "main");
                 });
 
             modelBuilder.Entity("DentalOffice_BE.Data.DocumentInstanceDto", b =>
@@ -729,12 +723,6 @@ namespace DentalOffice_BE.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DentalOffice_BE.Data.MaterialDto", "EnamelMaterial")
-                        .WithMany()
-                        .HasForeignKey("EnamelMaterialId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("DentalOffice_BE.Data.LotDto", "MetalLot")
                         .WithMany()
                         .HasForeignKey("MetalLotId")
@@ -778,8 +766,6 @@ namespace DentalOffice_BE.Data.Migrations
                     b.Navigation("DentinMaterial");
 
                     b.Navigation("EnamelLot");
-
-                    b.Navigation("EnamelMaterial");
 
                     b.Navigation("MetalLot");
 

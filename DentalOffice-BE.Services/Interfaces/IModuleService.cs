@@ -1,4 +1,5 @@
-﻿using DentalOffice_BE.Data;
+﻿using DentalOffice_BE.Common;
+using DentalOffice_BE.Data;
 using DentalOffice_BE.Services.Models;
 using System;
 using System.Collections.Generic;
@@ -15,4 +16,6 @@ public interface IModuleService
     Task<ModuleDto> Get(long id);
     Task<ModuleDto> Insert(ModuleDto model);
     Task<ModuleDto> Update(long id, ModuleDto model);
+    Task<KeyValuePair<IEnumerable<FormFieldPropsOption>, IEnumerable<LotDto>>> GetLotsByMaterialId(long materialId);
+    Task<object> GetLotsByMaterialIdAndColorId(long materialId, long colorId);
 }

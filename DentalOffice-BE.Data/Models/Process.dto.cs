@@ -1,7 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DentalOffice_BE.Common;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Reflection.Emit;
 using System.Text;
@@ -9,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace DentalOffice_BE.Data;
 
+[Table("processes", Schema = ContextSchemaConstants.main)]
 public class ProcessDto : BaseTableKey<long>
 {
     public long ModuleId { get; set; }
@@ -17,7 +20,6 @@ public class ProcessDto : BaseTableKey<long>
     public long MetalLotId { get; set; }
     public long DentinMaterialId { get; set; }
     public long DentinLotId { get; set; }
-    public long EnamelMaterialId { get; set; }
     public long EnamelLotId { get; set; }
     public long RiskId { get; set; }
     public long ColorId { get; set; }
@@ -28,7 +30,6 @@ public class ProcessDto : BaseTableKey<long>
     public LotDto? MetalLot { get; set; }
     public MaterialDto? DentinMaterial { get; set; }
     public LotDto? DentinLot { get; set; }
-    public MaterialDto? EnamelMaterial { get; set; }
     public LotDto? EnamelLot { get; set;}
     public ColorDto? Color { get; set; }
     public RiskDto? Risk { get; set; }
@@ -51,8 +52,6 @@ public class ProcessDtoConfiguration : IEntityTypeConfiguration<ProcessDto>
             .HasColumnName("dentin_material_id");
         builder.Property(e => e.DentinLotId)
             .HasColumnName("dentin_lot_id");
-        builder.Property(e => e.EnamelMaterialId)
-            .HasColumnName("enamel_material_id");
         builder.Property(e => e.EnamelLotId)
             .HasColumnName("enamel_lot_id");
         builder.Property(e => e.ColorId)
@@ -65,6 +64,7 @@ public class ProcessDtoConfiguration : IEntityTypeConfiguration<ProcessDto>
         builder.Property(e => e.UpdateDate)
             .HasColumnName("update_date")
             .HasDefaultValueSql("NOW()");
+        builder.Ignore(_ => _.Module);
 
         builder
             .HasOne(e => e.Module)
@@ -90,11 +90,6 @@ public class ProcessDtoConfiguration : IEntityTypeConfiguration<ProcessDto>
             .HasOne(e => e.DentinLot)
             .WithMany()
             .HasForeignKey(e => e.DentinLotId);
-
-        builder
-            .HasOne(e => e.EnamelMaterial)
-            .WithMany()
-            .HasForeignKey(e => e.EnamelMaterialId);
 
         builder
             .HasOne(e => e.EnamelLot)

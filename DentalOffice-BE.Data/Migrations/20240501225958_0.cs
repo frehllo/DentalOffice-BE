@@ -286,7 +286,8 @@ namespace DentalOffice_BE.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Processes",
+                name: "processes",
+                schema: "main",
                 columns: table => new
                 {
                     id = table.Column<long>(type: "bigint", nullable: false)
@@ -297,7 +298,6 @@ namespace DentalOffice_BE.Data.Migrations
                     metal_lot_id = table.Column<long>(type: "bigint", nullable: false),
                     dentin_material_id = table.Column<long>(type: "bigint", nullable: false),
                     dentin_lot_id = table.Column<long>(type: "bigint", nullable: false),
-                    enamel_material_id = table.Column<long>(type: "bigint", nullable: false),
                     enamel_lot_id = table.Column<long>(type: "bigint", nullable: false),
                     risk_id = table.Column<long>(type: "bigint", nullable: false),
                     color_id = table.Column<long>(type: "bigint", nullable: false),
@@ -309,90 +309,83 @@ namespace DentalOffice_BE.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Processes", x => x.id);
+                    table.PrimaryKey("PK_processes", x => x.id);
                     table.ForeignKey(
-                        name: "FK_Processes_colors_ColorDtoId",
+                        name: "FK_processes_colors_ColorDtoId",
                         column: x => x.ColorDtoId,
                         principalSchema: "main",
                         principalTable: "colors",
                         principalColumn: "id");
                     table.ForeignKey(
-                        name: "FK_Processes_colors_color_id",
+                        name: "FK_processes_colors_color_id",
                         column: x => x.color_id,
                         principalSchema: "main",
                         principalTable: "colors",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Processes_lots_dentin_lot_id",
+                        name: "FK_processes_lots_dentin_lot_id",
                         column: x => x.dentin_lot_id,
                         principalSchema: "main",
                         principalTable: "lots",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Processes_lots_enamel_lot_id",
+                        name: "FK_processes_lots_enamel_lot_id",
                         column: x => x.enamel_lot_id,
                         principalSchema: "main",
                         principalTable: "lots",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Processes_lots_metal_lot_id",
+                        name: "FK_processes_lots_metal_lot_id",
                         column: x => x.metal_lot_id,
                         principalSchema: "main",
                         principalTable: "lots",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Processes_materials_dentin_material_id",
+                        name: "FK_processes_materials_dentin_material_id",
                         column: x => x.dentin_material_id,
                         principalSchema: "main",
                         principalTable: "materials",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Processes_materials_enamel_material_id",
-                        column: x => x.enamel_material_id,
-                        principalSchema: "main",
-                        principalTable: "materials",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Processes_materials_metal_material_id",
+                        name: "FK_processes_materials_metal_material_id",
                         column: x => x.metal_material_id,
                         principalSchema: "main",
                         principalTable: "materials",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Processes_modules_ModuleDtoId",
+                        name: "FK_processes_modules_ModuleDtoId",
                         column: x => x.ModuleDtoId,
                         principalSchema: "main",
                         principalTable: "modules",
                         principalColumn: "id");
                     table.ForeignKey(
-                        name: "FK_Processes_modules_ModuleId",
+                        name: "FK_processes_modules_ModuleId",
                         column: x => x.ModuleId,
                         principalSchema: "main",
                         principalTable: "modules",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Processes_risks_RiskDtoId",
+                        name: "FK_processes_risks_RiskDtoId",
                         column: x => x.RiskDtoId,
                         principalSchema: "main",
                         principalTable: "risks",
                         principalColumn: "id");
                     table.ForeignKey(
-                        name: "FK_Processes_risks_risk_id",
+                        name: "FK_processes_risks_risk_id",
                         column: x => x.risk_id,
                         principalSchema: "main",
                         principalTable: "risks",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Processes_semiproducts_semiproduct_id",
+                        name: "FK_processes_semiproducts_semiproduct_id",
                         column: x => x.semiproduct_id,
                         principalSchema: "main",
                         principalTable: "semiproducts",
@@ -401,6 +394,7 @@ namespace DentalOffice_BE.Data.Migrations
 
             migrationBuilder.CreateTable(
                 name: "processes_stages",
+                schema: "main",
                 columns: table => new
                 {
                     ProcessesId = table.Column<long>(type: "bigint", nullable: false),
@@ -410,9 +404,10 @@ namespace DentalOffice_BE.Data.Migrations
                 {
                     table.PrimaryKey("PK_processes_stages", x => new { x.ProcessesId, x.StagesId });
                     table.ForeignKey(
-                        name: "FK_processes_stages_Processes_ProcessesId",
+                        name: "FK_processes_stages_processes_ProcessesId",
                         column: x => x.ProcessesId,
-                        principalTable: "Processes",
+                        principalSchema: "main",
+                        principalTable: "processes",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -496,72 +491,80 @@ namespace DentalOffice_BE.Data.Migrations
                 column: "studio_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Processes_color_id",
-                table: "Processes",
+                name: "IX_processes_color_id",
+                schema: "main",
+                table: "processes",
                 column: "color_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Processes_ColorDtoId",
-                table: "Processes",
+                name: "IX_processes_ColorDtoId",
+                schema: "main",
+                table: "processes",
                 column: "ColorDtoId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Processes_dentin_lot_id",
-                table: "Processes",
+                name: "IX_processes_dentin_lot_id",
+                schema: "main",
+                table: "processes",
                 column: "dentin_lot_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Processes_dentin_material_id",
-                table: "Processes",
+                name: "IX_processes_dentin_material_id",
+                schema: "main",
+                table: "processes",
                 column: "dentin_material_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Processes_enamel_lot_id",
-                table: "Processes",
+                name: "IX_processes_enamel_lot_id",
+                schema: "main",
+                table: "processes",
                 column: "enamel_lot_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Processes_enamel_material_id",
-                table: "Processes",
-                column: "enamel_material_id");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Processes_metal_lot_id",
-                table: "Processes",
+                name: "IX_processes_metal_lot_id",
+                schema: "main",
+                table: "processes",
                 column: "metal_lot_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Processes_metal_material_id",
-                table: "Processes",
+                name: "IX_processes_metal_material_id",
+                schema: "main",
+                table: "processes",
                 column: "metal_material_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Processes_ModuleDtoId",
-                table: "Processes",
+                name: "IX_processes_ModuleDtoId",
+                schema: "main",
+                table: "processes",
                 column: "ModuleDtoId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Processes_ModuleId",
-                table: "Processes",
+                name: "IX_processes_ModuleId",
+                schema: "main",
+                table: "processes",
                 column: "ModuleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Processes_risk_id",
-                table: "Processes",
+                name: "IX_processes_risk_id",
+                schema: "main",
+                table: "processes",
                 column: "risk_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Processes_RiskDtoId",
-                table: "Processes",
+                name: "IX_processes_RiskDtoId",
+                schema: "main",
+                table: "processes",
                 column: "RiskDtoId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Processes_semiproduct_id",
-                table: "Processes",
+                name: "IX_processes_semiproduct_id",
+                schema: "main",
+                table: "processes",
                 column: "semiproduct_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_processes_stages_StagesId",
+                schema: "main",
                 table: "processes_stages",
                 column: "StagesId");
 
@@ -621,7 +624,8 @@ namespace DentalOffice_BE.Data.Migrations
                 schema: "main");
 
             migrationBuilder.DropTable(
-                name: "processes_stages");
+                name: "processes_stages",
+                schema: "main");
 
             migrationBuilder.DropTable(
                 name: "sections",
@@ -632,7 +636,8 @@ namespace DentalOffice_BE.Data.Migrations
                 schema: "main");
 
             migrationBuilder.DropTable(
-                name: "Processes");
+                name: "processes",
+                schema: "main");
 
             migrationBuilder.DropTable(
                 name: "stages",

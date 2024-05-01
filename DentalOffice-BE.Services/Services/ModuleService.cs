@@ -6,6 +6,7 @@ using DentalOffice_BE.Services.Interfaces;
 using DentalOffice_BE.Services.Models;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using System.Reflection.Emit;
 
 namespace DentalOffice_BE.Services.Services;
 
@@ -18,8 +19,20 @@ public class ModuleService(DBContext _context) : IModuleService
 
     public async Task<ModuleDto> Get(long id)
     {
-        var entityDB = await _context.Modules.Include(_ => _.Processes).Include(_ => _.Studio).Where(_ => _.Id == id).FirstOrDefaultAsync();
-        Validate.ThrowIfNull(entityDB);
+        var entityDB = await _context.Modules.Include(_ => _.Studio).Where(_ => _.Id == id).FirstOrDefaultAsync();
+        
+        Validate.ThrowIfNull(entityDB); 
+        
+        var processes = await _context.Processes.Include(_ => _.Color).Include(_ => _.DentinMaterial).Include(_ => _.MetalMaterial).Where(_ => _.ModuleId == id).ToListAsync();
+        entityDB.Processes = processes;
+
+        if (entityDB.Processes != null)
+        {
+            foreach (var p in entityDB.Processes)
+            {
+                p.Module = null;
+            }
+        }
 
         return entityDB;
     }
@@ -34,22 +47,32 @@ public class ModuleService(DBContext _context) : IModuleService
 
     public async Task<ModuleDto> Update(long id, ModuleDto model)
     {
-        var entityDb = await _context.Modules.Where(_ => _.Id == id).FirstOrDefaultAsync();
-        Validate.ThrowIfNull(entityDb);
+        var entityDB = await _context.Modules.Where(_ => _.Id == id).FirstOrDefaultAsync();
+        Validate.ThrowIfNull(entityDB);
 
-        entityDb.CustomerName = model.CustomerName;
-        entityDb.PrescriptionDate = model.DeliveryDate;
-        entityDb.Description = model.Description;
-        entityDb.StudioId = model.StudioId;
-        entityDb.Processes = model.Processes;
+        entityDB.CustomerName = model.CustomerName;
+        entityDB.PrescriptionDate = model.DeliveryDate;
+        entityDB.Description = model.Description;
+        entityDB.StudioId = model.StudioId;
+        entityDB.Processes = model.Processes;
 
         await _context.SaveChangesAsync();
 
-        return entityDb;
+        if(entityDB.Processes != null)
+        {
+            foreach (var p in entityDB.Processes)
+            {
+                p.Module = null;
+            }
+        }
+
+        return entityDB;
     }
 
     public async Task<ModuleFormConfiguration> GetConfiguration()
     {
+        //TODO DA CAPIRE LE LAVORAZIONI!!!
+
         ModuleFormConfiguration? moduleConfig = null;
 
         using (StreamReader r = new StreamReader("../DentalOffice-BE.Services/json/module.json"))
@@ -79,7 +102,7 @@ public class ModuleService(DBContext _context) : IModuleService
 
             foreach (var s in semiProducts)
             {
-                moduleConfig.ProcessesForm?.FirstOrDefault()?.FieldGroup?.FirstOrDefault(_ => _.Key == "semiproductId")?.Props?.Options?.Add(new FormFieldPropsOption
+                moduleConfig.ProcessesForm?.FirstOrDefault()?.FieldGroup?.FirstOrDefault(_ => _.Key == "semiProductId")?.Props?.Options?.Add(new FormFieldPropsOption
                 {
                     Label = s.Key,
                     Value = s.Value
@@ -176,5 +199,63 @@ public class ModuleService(DBContext _context) : IModuleService
         }
 
         return moduleConfig;
+    }
+
+    public async Task<KeyValuePair<IEnumerable<FormFieldPropsOption>,IEnumerable<LotDto>>> GetLotsByMaterialId(long materialId)
+    {
+        var lots = await _context.Lots.Where(_ => _.MaterialId == materialId).Include(_ => _.Material).OrderByDescending(_ => _.UpdateDate).ToListAsync();
+
+        List<FormFieldPropsOption> options = new List<FormFieldPropsOption>();
+
+        if (lots is not null && lots.Count > 0)
+        {
+            foreach(var lot in lots)
+            {
+                if (lot.Material is not null && lot.Material.MaterialProperties != null)
+                {
+                    if (lot.Material!.MaterialTypeId == (long)MaterialType.Enamel)
+                    {
+                        lot.Material!.MaterialProperties = JsonConvert.DeserializeObject<EnamelProperties>(lot.Material!.MaterialProperties!.ToString());
+                    }
+                }
+
+                options.Add(new FormFieldPropsOption()
+                {
+                    Label = lot.Code,
+                    Value = lot.Id
+                });
+            }
+        }
+
+        return new KeyValuePair<IEnumerable<FormFieldPropsOption>, IEnumerable<LotDto>>(options, lots!);
+    }
+
+    public async Task<object> GetLotsByMaterialIdAndColorId(long materialId, long colorId)
+    {
+        var dentinLots = await _context.Lots.Where(_ => _.MaterialId == materialId).Include(_ => _.Material).OrderByDescending(_ => _.UpdateDate).ToListAsync();
+        dentinLots = dentinLots.Where(lot => lot.ColorId is not null && lot.ColorId == colorId).ToList();
+
+        var enamelLots = await _context.Lots.Include(_ => _.Material).Where(_ => _.Material!.MaterialTypeId == (long)MaterialType.Enamel).OrderByDescending(_ => _.UpdateDate).ToListAsync();
+
+        List<FormFieldPropsOption> enamelLotsOptions = new List<FormFieldPropsOption>();
+
+        foreach (var el in enamelLots)
+        {
+            EnamelProperties props = JsonConvert.DeserializeObject<EnamelProperties>(el.Material!.MaterialProperties!.ToString());
+            if (props.dentinColorsIds is not null && props.dentinColorsIds.Count() > 0 && props.dentinColorsIds.Contains(colorId))
+            {
+                enamelLotsOptions.Add(new FormFieldPropsOption() { Label = el.Code, Value = el.Id });
+
+            }
+        }
+
+        List<FormFieldPropsOption> dentinLotsOptions = new List<FormFieldPropsOption>();
+
+        foreach(var dl in dentinLots)
+        {
+            dentinLotsOptions.Add(new FormFieldPropsOption() { Label = dl.Code, Value = dl.Id });
+        }
+
+        return new { dentinLots = dentinLotsOptions, enamelLots = enamelLotsOptions };
     }
 }
