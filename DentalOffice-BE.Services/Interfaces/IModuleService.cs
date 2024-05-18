@@ -18,4 +18,8 @@ public interface IModuleService
     Task<ModuleDto> Update(long id, ModuleDto model);
     Task<KeyValuePair<IEnumerable<FormFieldPropsOption>, IEnumerable<LotDto>>> GetLotsByMaterialId(long materialId);
     Task<object> GetLotsByMaterialIdAndColorId(long materialId, long colorId);
+    Task<ProcessDto> AddProcess(ProcessDto model);
+    Task<ProcessDto> UpdateProcess(long id, ProcessDto model);
+    Task RemoveProcess(long id);
+    Task<IEnumerable<DocumentConfigurationDto>> GetDocumentsPrintPreviews(long id);
 }

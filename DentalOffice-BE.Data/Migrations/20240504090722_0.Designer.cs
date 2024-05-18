@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DentalOffice_BE.Data.Migrations
 {
     [DbContext(typeof(DBContext))]
-    [Migration("20240501225958_0")]
+    [Migration("20240504090722_0")]
     partial class _0
     {
         /// <inheritdoc />
@@ -181,7 +181,8 @@ namespace DentalOffice_BE.Data.Migrations
 
                     b.Property<string>("Code")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("ColorId")
                         .HasColumnType("bigint")
@@ -397,6 +398,9 @@ namespace DentalOffice_BE.Data.Migrations
                     b.Property<long?>("SemiProductId")
                         .HasColumnType("bigint")
                         .HasColumnName("semiproduct_id");
+
+                    b.Property<long[]>("StagesIds")
+                        .HasColumnType("bigint[]");
 
                     b.Property<DateTime?>("UpdateDate")
                         .ValueGeneratedOnAdd()

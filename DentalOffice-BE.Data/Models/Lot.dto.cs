@@ -30,6 +30,8 @@ public class LotDtoConfiguration : IEntityTypeConfiguration<LotDto>
             .HasColumnName("id");
         builder.Property(e => e.MaterialId)
             .HasColumnName("material_id");
+        builder.Property(e => e.Code)
+            .HasColumnName("code");
         builder.Property(e => e.ColorId)
             .HasColumnName("color_id");
         builder.HasOne(e => e.Color)

@@ -2,11 +2,14 @@
 using DentalOffice_BE.Common.Models;
 using DentalOffice_BE.Common.Utility;
 using DentalOffice_BE.Data;
+using DentalOffice_BE.Services.Extensions;
 using DentalOffice_BE.Services.Interfaces;
 using DentalOffice_BE.Services.Models;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using System.Diagnostics;
 using System.Reflection.Emit;
+using System.Text.RegularExpressions;
 
 namespace DentalOffice_BE.Services.Services;
 
@@ -23,7 +26,7 @@ public class ModuleService(DBContext _context) : IModuleService
         
         Validate.ThrowIfNull(entityDB); 
         
-        var processes = await _context.Processes.Include(_ => _.Color).Include(_ => _.DentinMaterial).Include(_ => _.MetalMaterial).Where(_ => _.ModuleId == id).ToListAsync();
+        var processes = await _context.Processes.Include(_ => _.Color).Include(_ => _.DentinMaterial).Include(_ => _.MetalMaterial).Include(_ => _.Stages).Where(_ => _.ModuleId == id).ToListAsync();
         entityDB.Processes = processes;
 
         if (entityDB.Processes != null)
@@ -31,6 +34,16 @@ public class ModuleService(DBContext _context) : IModuleService
             foreach (var p in entityDB.Processes)
             {
                 p.Module = null;
+
+                if (p.Stages != null && p.Stages.Count() > 0)
+                {
+                    foreach (var stage in p.Stages)
+                    {
+                        stage.Processes = null;
+
+                        p.StagesIds!.Add(stage.Id);
+                    }
+                }
             }
         }
 
@@ -51,20 +64,12 @@ public class ModuleService(DBContext _context) : IModuleService
         Validate.ThrowIfNull(entityDB);
 
         entityDB.CustomerName = model.CustomerName;
-        entityDB.PrescriptionDate = model.DeliveryDate;
+        entityDB.PrescriptionDate = model.PrescriptionDate;
+        entityDB.DeliveryDate = model.DeliveryDate;
         entityDB.Description = model.Description;
         entityDB.StudioId = model.StudioId;
-        entityDB.Processes = model.Processes;
-
+        
         await _context.SaveChangesAsync();
-
-        if(entityDB.Processes != null)
-        {
-            foreach (var p in entityDB.Processes)
-            {
-                p.Module = null;
-            }
-        }
 
         return entityDB;
     }
@@ -190,7 +195,7 @@ public class ModuleService(DBContext _context) : IModuleService
 
             foreach (var s in stages)
             {
-                moduleConfig.ProcessesForm?.FirstOrDefault()?.FieldGroup?.FirstOrDefault(_ => _.Key == "stageIds")?.Props?.Options?.Add(new FormFieldPropsOption
+                moduleConfig.ProcessesForm?.FirstOrDefault()?.FieldGroup?.FirstOrDefault(_ => _.Key == "stagesIds")?.Props?.Options?.Add(new FormFieldPropsOption
                 {
                     Label = s.Key,
                     Value = s.Value
@@ -257,5 +262,74 @@ public class ModuleService(DBContext _context) : IModuleService
         }
 
         return new { dentinLots = dentinLotsOptions, enamelLots = enamelLotsOptions };
+    }
+
+    public async Task<IEnumerable<DocumentConfigurationDto>> GetDocumentsPrintPreviews(long id)
+    {
+        var entitiesDB = await _context.DocumentConfigurations.ToListAsync();
+        Validate.ThrowIfNull(entitiesDB);
+        var moduleDB = await _context.Modules.Where(_ => _.Id == id)
+            //.Include(_ => _.Processes)
+            //.Include(_ => _.Processes)!.ThenInclude(_ => _.MetalMaterial)
+            //.Include(_ => _.Processes)!.ThenInclude(_ => _.DentinMaterial)
+            //.Include(_ => _.Processes)!.ThenInclude(_ => _.Color)
+            .FirstOrDefaultAsync();
+        Validate.ThrowIfNull(moduleDB);
+
+        var processesDB = await _context.Processes.Include(_ => _.Color).Include(_ => _.DentinMaterial).Include(_ => _.MetalMaterial).Include(_ => _.Stages).Where(_ => _.ModuleId == id).ToListAsync();
+        moduleDB.Processes = processesDB;
+
+        if (entitiesDB.Count > 0)
+        {
+            foreach(var doc in entitiesDB)
+            {
+                doc.Content = doc.Content.ReplaceAndExecuteCode<ModuleDto>(moduleDB);
+            }
+        }
+
+        return entitiesDB;
+    }
+
+    public async Task<ProcessDto> AddProcess(ProcessDto model)
+    {
+        _context.Processes.Add(model);
+        await _context.SaveChangesAsync();
+
+        var entityDB = await _context.Processes.Where(_ => _.Id == model.Id).Include(_ => _.DentinMaterial).Include(_ => _.MetalMaterial).Include(_ => _.Color).FirstOrDefaultAsync();
+        Validate.ThrowIfNull(entityDB);
+
+        return entityDB;
+    }
+
+    public async Task<ProcessDto> UpdateProcess(long id, ProcessDto model)
+    {
+        var entityDB = await _context.Processes.Where(_ => _.Id == id).FirstOrDefaultAsync();
+        Validate.ThrowIfNull(entityDB);
+
+        entityDB.MetalMaterialId = model.MetalMaterialId;
+        entityDB.MetalLotId = model.MetalLotId;
+        entityDB.DentinLotId = model.DentinLotId;
+        entityDB.DentinMaterialId = model.DentinMaterialId;
+        entityDB.ColorId = model.ColorId;
+        entityDB.EnamelLotId = model.EnamelLotId;
+        entityDB.RiskId = model.RiskId;
+        entityDB.SemiProductId = model.SemiProductId;
+        entityDB.StagesIds = model.StagesIds;
+
+        await _context.SaveChangesAsync();
+
+        var result = await _context.Processes.Where(_ => _.Id == model.Id).Include(_ => _.DentinMaterial).Include(_ => _.MetalMaterial).Include(_ => _.Color).FirstOrDefaultAsync();
+        Validate.ThrowIfNull(result);
+
+        return result;
+    }
+
+    public async Task RemoveProcess(long id)
+    {
+        var entityDb = _context.Processes.Find(id);
+        Validate.ThrowIfNull(entityDb);
+
+        _context.Remove(entityDb);
+        await _context.SaveChangesAsync();
     }
 }

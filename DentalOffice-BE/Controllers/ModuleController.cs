@@ -51,4 +51,28 @@ public class ModuleController(IModuleService _service) : ControllerBase
     {
         return await _service.GetLotsByMaterialIdAndColorId(id, colorId);
     }
+
+    [HttpPost("process")]
+    public async Task<ProcessDto> AddProcess(ProcessDto model)
+    {
+        return await _service.AddProcess(model);
+    }
+
+    [HttpPut("process/{id}")]
+    public async Task<ProcessDto> UpdateProcess(long id, ProcessDto model)
+    {
+        return await _service.UpdateProcess(id, model);
+    }
+
+    [HttpDelete("process/{id}")]
+    public async Task RemoveProcess(long id)
+    {
+        await _service.RemoveProcess(id);
+    }
+
+    [HttpGet("documents/{id}")]
+    public async Task<IEnumerable<DocumentConfigurationDto>> GetDocumentsPrintPreviews(long id)
+    {
+        return await _service.GetDocumentsPrintPreviews(id);
+    }
 }

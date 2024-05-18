@@ -230,7 +230,7 @@ namespace DentalOffice_BE.Data.Migrations
                 {
                     id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Code = table.Column<string>(type: "text", nullable: false),
+                    code = table.Column<string>(type: "text", nullable: false),
                     material_id = table.Column<long>(type: "bigint", nullable: false),
                     color_id = table.Column<long>(type: "bigint", nullable: true),
                     insert_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "NOW()"),
@@ -301,6 +301,7 @@ namespace DentalOffice_BE.Data.Migrations
                     enamel_lot_id = table.Column<long>(type: "bigint", nullable: false),
                     risk_id = table.Column<long>(type: "bigint", nullable: false),
                     color_id = table.Column<long>(type: "bigint", nullable: false),
+                    StagesIds = table.Column<long[]>(type: "bigint[]", nullable: true),
                     ColorDtoId = table.Column<long>(type: "bigint", nullable: true),
                     ModuleDtoId = table.Column<long>(type: "bigint", nullable: true),
                     RiskDtoId = table.Column<long>(type: "bigint", nullable: true),

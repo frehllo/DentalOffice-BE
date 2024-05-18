@@ -6,6 +6,9 @@ DECLARE DentinTypeId INT;
 DECLARE ResinTypeId INT;
 DECLARE EnamelTypeId INT;
 DECLARE DiskTypeId INT;
+DECLARE MetalId INT;
+DECLARE DentinId INT;
+DECLARE EnamelId INT;
 BEGIN
 
 -- insert into material_types
@@ -591,6 +594,38 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
     ]
 }'
 );
+
+INSERT INTO main.colors (code) VALUES 
+('A1');
+
+INSERT INTO main.materials (name, material_type_id, "MaterialProperties") VALUES 
+('Metallo 1', MetalTypeId, null)
+RETURNING id INTO MetalId;
+
+INSERT INTO main.materials (name, material_type_id, "MaterialProperties") VALUES 
+('Dentina 1', DentinTypeId, null)
+RETURNING id INTO DentinId;
+
+INSERT INTO main.materials (name, material_type_id, "MaterialProperties") VALUES 
+('Smalto 1', EnamelTypeId, '{ "dentinColorsIds" : [1] }')
+RETURNING id INTO EnamelId;
+
+INSERT INTO main.lots (code, material_id, color_id) VALUES 
+('12345M', MetalId, null),
+('12345D', DentinId, 1),
+('12345S', EnamelId, null);
+
+INSERT INTO main.studios (name, color) VALUES 
+('Studio 1', '#ababab');
+
+INSERT INTO main.risks (description) VALUES 
+('Rischio 1');
+
+INSERT INTO main.stages (name) VALUES 
+('Fase 1');
+
+INSERT INTO main.semiproducts (name) VALUES 
+('Semilavorazione 1');
 
 END $$
 

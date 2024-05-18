@@ -178,7 +178,8 @@ namespace DentalOffice_BE.Data.Migrations
 
                     b.Property<string>("Code")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<long?>("ColorId")
                         .HasColumnType("bigint")
@@ -394,6 +395,9 @@ namespace DentalOffice_BE.Data.Migrations
                     b.Property<long?>("SemiProductId")
                         .HasColumnType("bigint")
                         .HasColumnName("semiproduct_id");
+
+                    b.Property<long[]>("StagesIds")
+                        .HasColumnType("bigint[]");
 
                     b.Property<DateTime?>("UpdateDate")
                         .ValueGeneratedOnAdd()

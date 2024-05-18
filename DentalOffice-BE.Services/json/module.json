@@ -156,8 +156,8 @@
           }
         },
         {
-          "key": "stageIds",
-          "type": "select",
+          "key": "stagesIds",
+          "type": "multi-select",
           "className": "col-12",
           "props": {
             "label": "Lavorazioni",

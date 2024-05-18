@@ -23,6 +23,7 @@ public class ProcessDto : BaseTableKey<long>
     public long EnamelLotId { get; set; }
     public long RiskId { get; set; }
     public long ColorId { get; set; }
+    public IList<long>? StagesIds { get; set; }
     public ICollection<StageDto>? Stages { get; set; }
     public ModuleDto? Module { get; set; }
     public SemiProductDto? SemiProduct { get; set; }
