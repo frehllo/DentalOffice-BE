@@ -7,9 +7,6 @@ using DentalOffice_BE.Services.Interfaces;
 using DentalOffice_BE.Services.Models;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using System.Diagnostics;
-using System.Reflection.Emit;
-using System.Text.RegularExpressions;
 
 namespace DentalOffice_BE.Services.Services;
 

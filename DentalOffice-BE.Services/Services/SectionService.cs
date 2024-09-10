@@ -6,6 +6,7 @@ using DentalOffice_BE.Services.Interfaces;
 using DentalOffice_BE.Services.Models;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using System.Xml.Linq;
 
 namespace DentalOffice_BE.Services.Services;
 
@@ -138,6 +139,7 @@ public class SectionService(DBContext _context) : ISectionService
             "risks" => _context.Risks.AsQueryable().Where(_ => _.Id == id),
             "stages" => _context.Stages.AsQueryable().Where(_ => _.Id == id),
             "modules" => _context.Modules.AsQueryable().Where(_ => _.Id == id),
+            "document_configurations" => _context.DocumentConfigurations.AsQueryable().Where(_ => _.Id == id),
             _ => throw new Exception("ApiString not allowed")
         };
 
@@ -174,6 +176,7 @@ public class SectionService(DBContext _context) : ISectionService
             "risks" => _context.Risks.AsQueryable(),
             "stages" => _context.Stages.AsQueryable(),
             "modules" => _context.Modules.AsQueryable(),
+            "document_configurations" => _context.DocumentConfigurations.AsQueryable(),
             _ => throw new Exception("ApiString not allowed")
         };
 
@@ -216,6 +219,11 @@ public class SectionService(DBContext _context) : ISectionService
                 ModuleDto? module = JsonConvert.DeserializeObject<ModuleDto>(data.ToString().ThrowIfNull());
                 Validate.ThrowIfNull(module);
                 _context.Modules.Add(module);
+                break;
+            case "documents_configurations":
+                DocumentConfigurationDto? documents_configuration = JsonConvert.DeserializeObject<DocumentConfigurationDto>(data.ToString().ThrowIfNull());
+                Validate.ThrowIfNull(documents_configuration);
+                _context.DocumentConfigurations.Add(documents_configuration);
                 break;
             case "lots":
                 LotDto? lot = JsonConvert.DeserializeObject<LotDto>(data.ToString().ThrowIfNull());
@@ -293,6 +301,14 @@ public class SectionService(DBContext _context) : ISectionService
                 Validate.ThrowIfNull(module);
                 //TODO : PERCHE L'HO MESSO QUA?
                 break;
+            case "document_configurations":
+                DocumentConfigurationDto? documentconfiguration = await _context.DocumentConfigurations.Where(_ => _.Id == id).FirstOrDefaultAsync();
+                Validate.ThrowIfNull(documentconfiguration);
+                var documentConfigurationModel = JsonConvert.DeserializeObject<DocumentConfigurationDto>(data.ToString().ThrowIfNull());
+                Validate.ThrowIfNull(documentConfigurationModel);
+                documentconfiguration.Name = documentConfigurationModel.Name;
+                documentconfiguration.Content = documentConfigurationModel.Content;
+                break;
             case "lots":
                 LotDto? lot = await _context.Lots.Where(_ => _.Id == id).FirstOrDefaultAsync();
                 Validate.ThrowIfNull(lot);
@@ -356,6 +372,11 @@ public class SectionService(DBContext _context) : ISectionService
                 ModuleDto? module = await _context.Modules.Where(_ => _.Id == id).FirstOrDefaultAsync();
                 Validate.ThrowIfNull(module);
                 //TODO : PERCHE L'HO MESSO QUA?
+                break;
+            case "document_configurations":
+                DocumentConfigurationDto? documentConfiguration = await _context.DocumentConfigurations.Where(_ => _.Id == id).FirstOrDefaultAsync();
+                Validate.ThrowIfNull(documentConfiguration);
+                _context.Remove(documentConfiguration);
                 break;
             case "lots":
                 LotDto? lot = await _context.Lots.Where(_ => _.Id == id).FirstOrDefaultAsync();
