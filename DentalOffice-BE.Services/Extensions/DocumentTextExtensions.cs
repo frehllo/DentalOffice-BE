@@ -25,6 +25,12 @@ namespace DentalOffice_BE.Services.Extensions
                     data = model
                 };
 
+                if (expression.StartsWith("DateTime.Now"))
+                {
+                    var now = DateTime.Now.Date;
+                    return $"{now.Day}/{now.Month}/{now.Year}";
+                }
+
                 if (expression.StartsWith("IList"))
                 {
                     // Esegui il loop sugli elementi e concatena i valori delle proprietà

@@ -263,9 +263,9 @@ public class ModuleService(DBContext _context) : IModuleService
 
     public async Task<IEnumerable<DocumentConfigurationDto>> GetDocumentsPrintPreviews(long id)
     {
-        var entitiesDB = await _context.DocumentConfigurations.ToListAsync();
+        var entitiesDB = await _context.DocumentConfigurations.OrderBy(_ => _.Order).ToListAsync();
         Validate.ThrowIfNull(entitiesDB);
-        var moduleDB = await _context.Modules.Where(_ => _.Id == id)
+        var moduleDB = await _context.Modules.Include(_ => _.Studio).Where(_ => _.Id == id)
             //.Include(_ => _.Processes)
             //.Include(_ => _.Processes)!.ThenInclude(_ => _.MetalMaterial)
             //.Include(_ => _.Processes)!.ThenInclude(_ => _.DentinMaterial)

@@ -15,7 +15,9 @@ public class DocumentConfigurationDto : BaseTableKey<long>
 {
     public string Name { get; set; } = null!;
     public string Content { get; set; } = null!;
+    public int? Order { get; set; }
     public ICollection<DocumentInstanceDto>? Instances { get;}
+    public int? CopyCount { get; set; }
 }
 
 public class DocumentConfigurationDtoConfiguration : IEntityTypeConfiguration<DocumentConfigurationDto>
