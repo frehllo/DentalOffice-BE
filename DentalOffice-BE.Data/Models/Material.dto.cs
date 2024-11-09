@@ -1,9 +1,7 @@
-﻿using DentalOffice_BE.Common.Models;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
 using DentalOffice_BE.Common;
 using System.ComponentModel.DataAnnotations.Schema;
-using System;
 using System.Text.Json.Serialization;
 
 namespace DentalOffice_BE.Data;

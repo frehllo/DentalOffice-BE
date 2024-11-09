@@ -23,7 +23,7 @@ public class ModuleController(IModuleService _service) : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<ModuleDto> GetList(long id)
+    public async Task<ModuleDto> Get(long id)
     {
         return await _service.Get(id);
     }

@@ -14,7 +14,7 @@ public class ModuleService(DBContext _context) : IModuleService
 {
     public async Task<IEnumerable<ModuleDto>> GetList()
     {
-        return await _context.Modules.Include(_ => _.Studio).OrderByDescending(_ => _.UpdateDate).ToListAsync();
+        return await _context.Modules.Include(_ => _.Studio).Include(_ => _.Processes).OrderByDescending(_ => _.UpdateDate).ToListAsync();
     }
 
     public async Task<ModuleDto> Get(long id)
@@ -23,8 +23,10 @@ public class ModuleService(DBContext _context) : IModuleService
         
         Validate.ThrowIfNull(entityDB); 
         
-        var processes = await _context.Processes.Include(_ => _.Color).Include(_ => _.DentinMaterial).Include(_ => _.MetalMaterial).Include(_ => _.Stages).Where(_ => _.ModuleId == id).ToListAsync();
+        var processes = await _context.Processes.Include(_ => _.Color).Include(_ => _.DentinMaterial).Include(_ => _.MetalMaterial).Where(_ => _.ModuleId == id).ToListAsync();
         entityDB.Processes = processes;
+
+        var stages = await _context.Stages.ToListAsync();
 
         if (entityDB.Processes != null)
         {
@@ -32,14 +34,15 @@ public class ModuleService(DBContext _context) : IModuleService
             {
                 p.Module = null;
 
-                if (p.Stages != null && p.Stages.Count() > 0)
+                if (p.StagesIds != null && p.StagesIds.Count() > 0)
                 {
-                    foreach (var stage in p.Stages)
+                    if(p.Stages == null)
                     {
-                        stage.Processes = null;
-
-                        p.StagesIds!.Add(stage.Id);
+                        p.Stages = new List<StageDto>();
                     }
+
+                    var procecessStages = stages.Where(_ => p.StagesIds.Contains(_.Id)).ToList();
+                    p.Stages = procecessStages;
                 }
             }
         }
@@ -273,7 +276,24 @@ public class ModuleService(DBContext _context) : IModuleService
             .FirstOrDefaultAsync();
         Validate.ThrowIfNull(moduleDB);
 
-        var processesDB = await _context.Processes.Include(_ => _.Color).Include(_ => _.DentinMaterial).Include(_ => _.MetalMaterial).Include(_ => _.Stages).Where(_ => _.ModuleId == id).ToListAsync();
+        var processesDB = await _context.Processes.Include(_ => _.Color).Include(_ => _.DentinMaterial).Include(_ => _.MetalMaterial).Include(_ => _.SemiProduct).Include(_ => _.MetalLot).Include(_ => _.DentinLot).Include(_ => _.EnamelLot).Where(_ => _.ModuleId == id).ToListAsync();
+        var stagesDB = await _context.Stages.ToListAsync();
+        if(stagesDB.Count > 0)
+        {
+            foreach (var process in processesDB)
+            {
+                if (process.StagesIds != null && process.StagesIds.Count() > 0)
+                {
+                    if (process.Stages == null)
+                    {
+                        process.Stages = new List<StageDto>();
+                    }
+
+                    var procecessStages = stagesDB.Where(_ => process.StagesIds.Contains(_.Id)).ToList();
+                    process.Stages = procecessStages;
+                }
+            }
+        }
         moduleDB.Processes = processesDB;
 
         if (entitiesDB.Count > 0)

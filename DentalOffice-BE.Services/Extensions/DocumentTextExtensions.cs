@@ -1,12 +1,24 @@
 ﻿using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
+using DentalOffice_BE.Data;
+using DentalOffice_BE;
 using Newtonsoft.Json;
+using System.Reflection;
+using Microsoft.CodeAnalysis.Scripting.Hosting;
+using System.Text;
 
 namespace DentalOffice_BE.Services.Extensions
 {
     public static class IDocumentTextExtensions
     {
+        static readonly Assembly[] _references = [
+        typeof(Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions).Assembly,
+
+            typeof(DentalOffice_BE.Data.StageDto).Assembly
+            
+        ];
+
         public static string ReplaceAndExecuteCode<T>(this string input, T model)
         {
             string pattern = @"\{\{(.+?)\}\}";
@@ -48,10 +60,22 @@ namespace DentalOffice_BE.Services.Extensions
 
         public static string ExecuteCode<T>(string expression, object data)
         {
+            expression = Regex.Unescape(expression);
+            var assemblyReferences = _references;
+            var assemblyLoader = LoadAssemblies(assemblyReferences);
+
+            var encoding = Encoding.UTF8;
+
+            var options = ScriptOptions.Default
+            .WithReferences(assemblyReferences)
+            .WithEmitDebugInformation(true)
+            .WithFileEncoding(encoding);
+
+
             try
             {
                 // Esegui il codice e restituisci il risultato
-                var result = CSharpScript.EvaluateAsync(expression, ScriptOptions.Default.WithReferences(typeof(object).Assembly), globalsType: typeof(Globals<T>), globals: data).Result;
+                var result = CSharpScript.EvaluateAsync("using System.Linq; using System.Collections.Generic; using DentalOffice_BE.Data;" + expression, options, globalsType: typeof(Globals<T>), globals: data).Result;
 
                 if (result is DateTime)
                 {
@@ -99,6 +123,18 @@ namespace DentalOffice_BE.Services.Extensions
         public class Globals<T>
         {
             public T? data { get; set; }
+        }
+
+        static InteractiveAssemblyLoader LoadAssemblies(Assembly[] assemblies)
+        {
+            var assemblyResolver = new InteractiveAssemblyLoader();
+
+            foreach (var assemblyReference in assemblies)
+            {
+                assemblyResolver.RegisterDependency(assemblyReference);
+            }
+
+            return assemblyResolver;
         }
     }
 }
