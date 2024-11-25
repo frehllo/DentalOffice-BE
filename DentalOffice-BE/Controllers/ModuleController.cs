@@ -40,6 +40,12 @@ public class ModuleController(IModuleService _service) : ControllerBase
         return await _service.Update(id, model);
     }
 
+    [HttpDelete("{id}")]
+    public async Task Delete(long id)
+    {
+        await _service.Delete(id);
+    }
+
     [HttpGet("lots/{id}")]
     public async Task<KeyValuePair<IEnumerable<FormFieldPropsOption>, IEnumerable<LotDto>>> GetLotsByMaterialId(long id)
     {

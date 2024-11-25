@@ -71,7 +71,24 @@ public class ModuleService(DBContext _context) : IModuleService
         
         await _context.SaveChangesAsync();
 
+        var processes = await _context.Processes.Include(_ => _.Color).Include(_ => _.DentinMaterial).Include(_ => _.MetalMaterial).Where(_ => _.ModuleId == id).ToListAsync();
+        entityDB.Processes = processes;
+
+        foreach (var process in processes)
+        {
+            process.Module = null;
+        }
+
         return entityDB;
+    }
+
+    public async Task Delete(long id)
+    {
+        var entityDB = await _context.Modules.Where(_ => _.Id == id).FirstOrDefaultAsync();
+        Validate.ThrowIfNull(entityDB);
+
+        _context.Remove(entityDB);
+        await _context.SaveChangesAsync();
     }
 
     public async Task<ModuleFormConfiguration> GetConfiguration()
