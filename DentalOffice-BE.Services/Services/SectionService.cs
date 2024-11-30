@@ -220,10 +220,10 @@ public class SectionService(DBContext _context) : ISectionService
                 Validate.ThrowIfNull(module);
                 _context.Modules.Add(module);
                 break;
-            case "documents_configurations":
-                DocumentConfigurationDto? documents_configuration = JsonConvert.DeserializeObject<DocumentConfigurationDto>(data.ToString().ThrowIfNull());
-                Validate.ThrowIfNull(documents_configuration);
-                _context.DocumentConfigurations.Add(documents_configuration);
+            case "document_configurations":
+                DocumentConfigurationDto? document_configuration = JsonConvert.DeserializeObject<DocumentConfigurationDto>(data.ToString().ThrowIfNull());
+                Validate.ThrowIfNull(document_configuration);
+                _context.DocumentConfigurations.Add(document_configuration);
                 break;
             case "lots":
                 LotDto? lot = JsonConvert.DeserializeObject<LotDto>(data.ToString().ThrowIfNull());

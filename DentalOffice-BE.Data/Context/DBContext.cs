@@ -2,14 +2,21 @@
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using System.Text.Json;
+using Microsoft.Extensions.Configuration;
 
 namespace DentalOffice_BE.Data;
 
 public class DBContext : DbContext
 {
+    private readonly IConfiguration _configuration;
     public DBContext()
     {
         SetOptions();
+    }
+
+    public DBContext(IConfiguration configuration)
+    {
+        _configuration = configuration;
     }
 
     public DBContext(DbContextOptions<DbContext> context) : base(context)
@@ -47,7 +54,7 @@ public class DBContext : DbContext
             NpgsqlConnection.GlobalTypeMapper.EnableDynamicJson();
 #pragma warning restore CS0618 // Il tipo o il membro è obsoleto
 
-            optionsBuilder.UseNpgsql("Host=localhost;Database=DentalStudio;Username=postgres;Password=narcis_buzatu");
+            optionsBuilder.UseNpgsql(_configuration.GetConnectionString("PostgreSQL"));
         }
 
         base.OnConfiguring(optionsBuilder);

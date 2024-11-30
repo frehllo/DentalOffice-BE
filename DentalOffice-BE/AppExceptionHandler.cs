@@ -10,11 +10,12 @@ namespace DentalOffice_BE
             var response = new ErrorResponse()
             {
                 StatusCode = StatusCodes.Status500InternalServerError,
-                Message = exception.Message
+                Message = exception.InnerException != null && exception.InnerException.Message != null ? exception.InnerException.Message : exception.Message
             };
 
             await httpContext.Response.WriteAsJsonAsync(response);
-            throw new NotImplementedException();
+
+            return default;
         }
     }
 }
