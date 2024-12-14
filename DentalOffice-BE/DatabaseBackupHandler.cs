@@ -4,15 +4,14 @@ namespace DentalOffice_BE;
 
 public static class DatabaseBackupHandler
 {
-    public static void CreateBackup(string host = "localhost", string dbName = "DentalStudio", string user = "postgres", string password = "narcis_buzatu", string backupPath = "DBbackup/backup.sql")
+    public static void CreateBackup(string host = "localhost", string dbName = "DentalStudio", string user = "postgres", string password = "narcis_buzatu", string backupPath = "DBbackup/backup.dump")
     {
-        // Crea il comando pg_dump
         var process = new Process
         {
             StartInfo = new ProcessStartInfo
             {
-                FileName = @"C:\Program Files\PostgreSQL\16\bin\pg_dump.exe",
-                Arguments = $"-h {host} -U {user} -d {dbName} -F c -f \"{backupPath}\"",
+                FileName = @"C:\Program Files\PostgreSQL\16\bin\pg_dump.exe", // Percorso a pg_dump
+                Arguments = $"-h {host} -U {user} -d {dbName} -F c -f \"{backupPath}\"", // Formato personalizzato
                 RedirectStandardInput = true,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
@@ -25,14 +24,22 @@ public static class DatabaseBackupHandler
             }
         };
 
-        process.Start();
-
-        string error = process.StandardError.ReadToEnd();
-        if (!string.IsNullOrEmpty(error))
+        try
         {
-            throw new Exception($"Backup failed: {error}");
-        }
+            process.Start();
+            process.WaitForExit(); // Aspetta che il backup sia completato
 
-        process.WaitForExit();
+            string error = process.StandardError.ReadToEnd();
+            if (!string.IsNullOrEmpty(error))
+            {
+                throw new Exception($"Backup failed: {error}");
+            }
+
+            Console.WriteLine("Backup completed successfully!");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error creating backup: {ex.Message}");
+        }
     }
 }
