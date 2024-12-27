@@ -375,6 +375,15 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
                         "label":"Nome",
                         "required":true
                     }
+                },
+                {
+                    "key": "content",
+                    "type": "textarea",
+                    "props": {
+                        "label": "Configurazione",
+                        "required": false
+                    },
+                    "className": "col-12"
                 }
             ]
         }

@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using DentalOffice_BE.Data;
-using Microsoft.Extensions.Configuration;
 
 namespace DentalOffice_BE.Services;
 
