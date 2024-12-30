@@ -308,6 +308,7 @@ public class SectionService(DBContext _context) : ISectionService
                 Validate.ThrowIfNull(documentConfigurationModel);
                 documentconfiguration.Name = documentConfigurationModel.Name;
                 documentconfiguration.Content = documentConfigurationModel.Content;
+                documentconfiguration.CopyCount = documentConfigurationModel.CopyCount;
                 break;
             case "lots":
                 LotDto? lot = await _context.Lots.Where(_ => _.Id == id).FirstOrDefaultAsync();

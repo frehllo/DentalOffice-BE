@@ -354,13 +354,19 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
     ]
 }'
 ),
-('Moduli', '/modules', '/modules', NULL,
+('Moduli', '/document_configurations', '/document_configurations', NULL,
 '{
     "iconName": "insert_drive_file",
     "tableHeaderFields":
     [
         {
             "field":"name"
+        },
+        {
+            "field":"content"
+        },
+        {
+            "field":"copyCount"
         }
     ],
     "formConfiguration":
@@ -374,6 +380,15 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
                     "props":{
                         "label":"Nome",
                         "required":true
+                    }
+                },
+                {
+                    "key":"copyCount",
+                    "type":"input",
+                    "className":"col-12",
+                    "props":{
+                        "label":"Numero di Copie",
+                        "required":false
                     }
                 },
                 {
