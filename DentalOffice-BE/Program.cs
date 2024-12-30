@@ -30,8 +30,6 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-DatabaseBackupHandler.CreateBackup();
-
 app.UseCors();
 
 app.UseSwagger();
