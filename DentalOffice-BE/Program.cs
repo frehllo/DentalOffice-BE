@@ -1,7 +1,11 @@
 using DentalOffice_BE.Services;
 using DentalOffice_BE;
+using System.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var maxMemory = 1024L * 1024L * 1024L; // 1 GB
+Process.GetCurrentProcess().MaxWorkingSet = (IntPtr)maxMemory;
 
 builder.Services.AddControllers();
 
