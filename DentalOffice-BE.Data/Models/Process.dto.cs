@@ -16,13 +16,13 @@ public class ProcessDto : BaseTableKey<long>
 {
     public long ModuleId { get; set; }
     public long? SemiProductId { get; set; }
-    public long MetalMaterialId { get; set; }
-    public long MetalLotId { get; set; }
-    public long DentinMaterialId { get; set; }
-    public long DentinLotId { get; set; }
-    public long EnamelLotId { get; set; }
-    public long RiskId { get; set; }
-    public long ColorId { get; set; }
+    public long? MetalMaterialId { get; set; }
+    public long? MetalLotId { get; set; }
+    public long? DentinMaterialId { get; set; }
+    public long? DentinLotId { get; set; }
+    public long? EnamelLotId { get; set; }
+    public long? RiskId { get; set; }
+    public long? ColorId { get; set; }
     public IList<long>? StagesIds { get; set; }
     public ICollection<StageDto>? Stages { get; set; }
     public ModuleDto? Module { get; set; }

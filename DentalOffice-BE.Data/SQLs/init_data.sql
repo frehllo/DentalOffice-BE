@@ -176,6 +176,16 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
                     "key" : "materialProperties",
                     "fieldGroup" : [
                         {
+                          "key": "dentinId",
+                          "type": "select",
+                          "props": {
+                            "label": "Dentina",
+                            "options": [],
+                            "required": true
+                          },
+                          "className": "col-12"
+                        },
+                        {
                             "key":"dentinColorsIds",
                             "type":"multi-select",
                             "className":"col-12",

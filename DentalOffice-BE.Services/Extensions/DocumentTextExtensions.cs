@@ -80,7 +80,8 @@ namespace DentalOffice_BE.Services.Extensions
                 if (result is DateTime)
                 {
                     DateTime date = (DateTime)result;
-                    result = $"{date.Day}/{date.Month}/{date.Year}";
+                    var locale = date.ToLocalTime();
+                    result = $"{locale.Day}/{locale.Month}/{locale.Year}";
                 }
 
                 return result?.ToString() ?? string.Empty;
@@ -106,7 +107,8 @@ namespace DentalOffice_BE.Services.Extensions
                 
                 if (result is IList<object> strings)
                 {
-                    var total = string.Join(", ", strings);
+                    var distinctStrings = strings.Distinct();
+                    var total = string.Join(", ", distinctStrings);
                     return total;
                 }
                 else

@@ -64,8 +64,8 @@ public class ModuleService(DBContext _context) : IModuleService
         Validate.ThrowIfNull(entityDB);
 
         entityDB.CustomerName = model.CustomerName;
-        entityDB.PrescriptionDate = model.PrescriptionDate;
-        entityDB.DeliveryDate = model.DeliveryDate;
+        entityDB.PrescriptionDate = model.PrescriptionDate != null ? model.PrescriptionDate.Value.ToUniversalTime() : model.PrescriptionDate;
+        entityDB.DeliveryDate = model.DeliveryDate != null ? model.DeliveryDate.Value.ToUniversalTime() : model.DeliveryDate;
         entityDB.Description = model.Description;
         entityDB.StudioId = model.StudioId;
         
@@ -254,6 +254,9 @@ public class ModuleService(DBContext _context) : IModuleService
 
     public async Task<object> GetLotsByMaterialIdAndColorId(long materialId, long colorId)
     {
+        var dentin = await _context.Materials.FindAsync(materialId);
+        Validate.ThrowIfNull(dentin);
+
         var dentinLots = await _context.Lots.Where(_ => _.MaterialId == materialId).Include(_ => _.Material).OrderByDescending(_ => _.UpdateDate).ToListAsync();
         dentinLots = dentinLots.Where(lot => lot.ColorId is not null && lot.ColorId == colorId).ToList();
 
@@ -264,10 +267,9 @@ public class ModuleService(DBContext _context) : IModuleService
         foreach (var el in enamelLots)
         {
             EnamelProperties props = JsonConvert.DeserializeObject<EnamelProperties>(el.Material!.MaterialProperties!.ToString());
-            if (props.dentinColorsIds is not null && props.dentinColorsIds.Count() > 0 && props.dentinColorsIds.Contains(colorId))
+            if (props.dentinColorsIds is not null && props.dentinColorsIds.Count() > 0 && props.dentinColorsIds.Contains(colorId) && props.dentinId != null && props.dentinId == dentin.Id)
             {
                 enamelLotsOptions.Add(new FormFieldPropsOption() { Label = el.Code, Value = el.Id });
-
             }
         }
 

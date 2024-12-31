@@ -6,7 +6,7 @@ using DentalOffice_BE.Services.Interfaces;
 using DentalOffice_BE.Services.Models;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using System.Xml.Linq;
+using System.Drawing;
 
 namespace DentalOffice_BE.Services.Services;
 
@@ -76,6 +76,7 @@ public class SectionService(DBContext _context) : ISectionService
             if (parts.Length > 1)
             {
                 var colors = await _context.Colors.ToListAsync();
+                var dentins = await _context.Materials.Include(_ => _.MaterialType).Where(_ => _.MaterialType != null && _.MaterialType.Id == (long)MaterialType.Dentin).ToListAsync();
 
                 foreach (var color in colors)
                 {
@@ -83,6 +84,15 @@ public class SectionService(DBContext _context) : ISectionService
                     {
                         Label = color.Code,
                         Value = color.Id
+                    });
+                }
+
+                foreach (var dentin in dentins)
+                {
+                    data?.Configuration?.FormConfiguration?.FirstOrDefault()?.FieldGroup?.FirstOrDefault(_ => _.Key == "materialProperties")?.FieldGroup?.FirstOrDefault(_ => _.Key == "dentinId")?.Props?.Options?.Add(new FormFieldPropsOption
+                    {
+                        Label = dentin.Name,
+                        Value = dentin.Id
                     });
                 }
             }
@@ -235,7 +245,7 @@ public class SectionService(DBContext _context) : ISectionService
                 Validate.ThrowIfNull(materialDto);
                 if(materialDto.MaterialProperties != null)
                 {
-                    if(id == (long)MaterialType.Enamel)
+                    if(materialDto.MaterialTypeId == (long)MaterialType.Enamel)
                     {
                         materialDto.MaterialProperties = JsonConvert.DeserializeObject<EnamelProperties>(materialDto.MaterialProperties.ToString());
                     }
@@ -325,7 +335,7 @@ public class SectionService(DBContext _context) : ISectionService
                 Validate.ThrowIfNull(materialModel);
                 if (materialModel.MaterialProperties != null)
                 {
-                    if (id == (long)MaterialType.Enamel)
+                    if (materialModel.MaterialTypeId == (long)MaterialType.Enamel)
                     {
                         material.MaterialProperties = JsonConvert.DeserializeObject<EnamelProperties>(materialModel.MaterialProperties.ToString());
                     }
