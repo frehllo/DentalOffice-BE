@@ -10,6 +10,7 @@ public class Section
     public string Title { get; set; } = null!;
     public string Route { get; set; } = null!;
     public string? ApiString { get; set; }
+    public bool? Enabled { get; set; }
     public ICollection<SectionViewModel>? SubSections { get; set; }
     public SectionConfiguration? Configuration { get; set; } = null;
 }

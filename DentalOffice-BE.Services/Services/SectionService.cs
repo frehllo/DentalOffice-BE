@@ -6,7 +6,6 @@ using DentalOffice_BE.Services.Interfaces;
 using DentalOffice_BE.Services.Models;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using System.Drawing;
 
 namespace DentalOffice_BE.Services.Services;
 
@@ -16,11 +15,19 @@ public class SectionService(DBContext _context) : ISectionService
     {
         var query = _context.Sections.AsQueryable();
 
-        query = query.Include(_ => _.SubSections).Include(_ => _.Configuration);
+        query = query.Include(_ => _.SubSections).Where(_ => _.Enabled == true).Include(_ => _.Configuration);
 
         query = query.Where(_ => _.SectionId == null);
 
         var data = await query.ToListAsync();
+
+        foreach (var entity in data)
+        {
+            if(entity.SubSections != null && entity.SubSections.Any())
+            {
+                entity.SubSections = entity.SubSections.Where(sub => sub.Enabled == true).ToList();
+            }
+        }
 
         return data.Select(_ => _.MapViewModelFromDto());
     }
@@ -32,8 +39,13 @@ public class SectionService(DBContext _context) : ISectionService
         query = query.Include(_ => _.SubSections).Include(_ => _.Configuration);
 
         query = query.Where(_ => _.Route == '/' + route);
-        
+
         var data = await query.FirstOrDefaultAsync();
+
+        if (data != null && data.SubSections != null && data.SubSections.Any())
+        {
+            data.SubSections = data.SubSections.Where(sub => sub.Enabled == true).ToList();
+        }
 
         Validate.ThrowIfNull(data);
 

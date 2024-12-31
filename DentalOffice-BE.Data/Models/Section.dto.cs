@@ -13,6 +13,7 @@ public class SectionDto : BaseTableKey<long>
     public long? SectionId { get; set; }
     public string Title { get; set; } = null!;
     public string Route { get; set; } = null!;
+    public bool? Enabled { get; set; }
     public string? ApiString { get; set; }
     public SectionConfiguration? Configuration { get; set; } = null;
     [Newtonsoft.Json.JsonIgnore]
