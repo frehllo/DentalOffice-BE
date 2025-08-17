@@ -14,7 +14,7 @@ public class ModuleService(DBContext _context) : IModuleService
 {
     public async Task<IEnumerable<ModuleDto>> GetList()
     {
-        return await _context.Modules.Include(_ => _.Studio).Include(_ => _.Processes).OrderByDescending(_ => _.UpdateDate).ToListAsync();
+        return await _context.Modules.Include(_ => _.Studio).Include(_ => _.Processes).OrderByDescending(_ => _.UpdateDate).Take(50).ToListAsync();
     }
 
     public async Task<ModuleDto> Get(long id)
