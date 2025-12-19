@@ -14,16 +14,29 @@ namespace DentalOffice_BE.Data;
 [Table("processes", Schema = ContextSchemaConstants.main)]
 public class ProcessDto : BaseTableKey<long>
 {
+    [NotMapped]
+    public virtual string? Name { get; set; }
     public long ModuleId { get; set; }
     public long? SemiProductId { get; set; }
     public long? MetalMaterialId { get; set; }
     public long? MetalLotId { get; set; }
     public long? DentinMaterialId { get; set; }
+    public long? DiskMaterialId { get; set; }
     public long? DentinLotId { get; set; }
     public long? EnamelLotId { get; set; }
+    public long? DiskLotId { get; set; }
     public long? RiskId { get; set; }
     public long? ColorId { get; set; }
     public IList<long>? StagesIds { get; set; }
+    public string? Others { get; set; }
+    public string? MetalCustom { get; set; }
+    public string? MetalLotCustom { get; set; }
+    public string? DentinCustom { get; set; }
+    public string? DentinLotCustom { get; set; }
+    public string? EnamelCustom { get; set; }
+    public string? EnamelLotCustom { get; set; }
+    public string? DiskCustom { get; set; }
+    public string? DiskLotCustom { get; set; }
     public ICollection<StageDto>? Stages { get; set; }
     public ModuleDto? Module { get; set; }
     public SemiProductDto? SemiProduct { get; set; }
@@ -34,6 +47,12 @@ public class ProcessDto : BaseTableKey<long>
     public LotDto? EnamelLot { get; set;}
     public ColorDto? Color { get; set; }
     public RiskDto? Risk { get; set; }
+    public MaterialDto? DiskMaterial { get; set; }
+    public LotDto? DiskLot { get; set; }
+    public string GetRiepilogo(MaterialDto? metal, MaterialDto? dentin, MaterialDto? disk)
+    {
+        return metal != null ? metal.Name : dentin != null ? dentin.Name : disk != null ? disk.Name : "Processo Generico";
+    }
 }
 
 public class ProcessDtoConfiguration : IEntityTypeConfiguration<ProcessDto>
@@ -106,6 +125,16 @@ public class ProcessDtoConfiguration : IEntityTypeConfiguration<ProcessDto>
             .HasOne(e => e.Risk)
             .WithMany()
             .HasForeignKey(e => e.RiskId);
+
+        builder
+            .HasOne(e => e.DiskMaterial)
+            .WithMany()
+            .HasForeignKey(e => e.DiskMaterialId);
+
+        builder
+            .HasOne(e => e.DiskLot)
+            .WithMany()
+            .HasForeignKey(e => e.DiskLotId);
 
         //builder
         //    .HasMany(e => e.Stages)

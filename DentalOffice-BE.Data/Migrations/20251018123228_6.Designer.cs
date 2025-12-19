@@ -3,17 +3,20 @@ using System;
 using DentalOffice_BE.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace DentalOffice_BE.Data.Migrations
+namespace DentalOffice_BE.Data.Data.Migrations
 {
     [DbContext(typeof(DBContext))]
-    partial class DBContextModelSnapshot : ModelSnapshot
+    [Migration("20251018123228_6")]
+    partial class _6
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -420,9 +423,6 @@ namespace DentalOffice_BE.Data.Migrations
 
                     b.Property<long>("ModuleId")
                         .HasColumnType("bigint");
-
-                    b.Property<string>("Others")
-                        .HasColumnType("text");
 
                     b.Property<long?>("RiskDtoId")
                         .HasColumnType("bigint");

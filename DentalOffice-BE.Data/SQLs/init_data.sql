@@ -337,7 +337,7 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
     ]
 }'
 ),
-('Fasi di lavoro', '/stages', '/stages', NULL,
+('Fasi di Lavorazione', '/stages', '/stages', NULL,
 '{
     "iconName": "skip_next",
     "tableHeaderFields":

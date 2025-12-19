@@ -23,7 +23,7 @@ public class ModuleService(DBContext _context) : IModuleService
         
         Validate.ThrowIfNull(entityDB); 
         
-        var processes = await _context.Processes.Include(_ => _.Color).Include(_ => _.DentinMaterial).Include(_ => _.MetalMaterial).Where(_ => _.ModuleId == id).ToListAsync();
+        var processes = await _context.Processes.Include(_ => _.Color).Include(_ => _.DentinMaterial).Include(_ => _.MetalMaterial).Include(_ => _.DiskMaterial).Where(_ => _.ModuleId == id).ToListAsync();
         entityDB.Processes = processes;
 
         var stages = await _context.Stages.ToListAsync();
@@ -33,6 +33,8 @@ public class ModuleService(DBContext _context) : IModuleService
             foreach (var p in entityDB.Processes)
             {
                 p.Module = null;
+
+                p.Name = p.GetRiepilogo(p.MetalMaterial, p.DentinMaterial, p.DiskMaterial);
 
                 if (p.StagesIds != null && p.StagesIds.Count() > 0)
                 {
@@ -186,6 +188,28 @@ public class ModuleService(DBContext _context) : IModuleService
                 });
             }
 
+            var diskMaterials = await _context.Materials.OrderByDescending(_ => _.UpdateDate).Where(_ => _.MaterialTypeId == (long)MaterialType.PolycarbonateDisc).ToDictionaryAsync(_ => _.Name, _ => _.Id);
+
+            foreach (var m in diskMaterials)
+            {
+                moduleConfig.ProcessesForm?.FirstOrDefault()?.FieldGroup?.FirstOrDefault(_ => _.Key == "diskMaterialId")?.Props?.Options?.Add(new FormFieldPropsOption
+                {
+                    Label = m.Key,
+                    Value = m.Value
+                });
+            }
+
+            var diskMaterialsLots = await _context.Lots.Include(_ => _.Material).Where(_ => _.Material!.MaterialTypeId == (long)MaterialType.PolycarbonateDisc).OrderByDescending(_ => _.UpdateDate).ToDictionaryAsync(_ => _.Code, _ => _.Id);
+
+            foreach (var m in diskMaterialsLots)
+            {
+                moduleConfig.ProcessesForm?.FirstOrDefault()?.FieldGroup?.FirstOrDefault(_ => _.Key == "diskLotId")?.Props?.Options?.Add(new FormFieldPropsOption
+                {
+                    Label = m.Key,
+                    Value = m.Value
+                });
+            }
+
             var colors = await _context.Colors.OrderByDescending(_ => _.UpdateDate).ToDictionaryAsync(_ => _.Code, _ => _.Id);
 
             foreach (var c in colors)
@@ -288,10 +312,6 @@ public class ModuleService(DBContext _context) : IModuleService
         var entitiesDB = await _context.DocumentConfigurations.OrderBy(_ => _.Order).ToListAsync();
         Validate.ThrowIfNull(entitiesDB);
         var moduleDB = await _context.Modules.Include(_ => _.Studio).Where(_ => _.Id == id)
-            //.Include(_ => _.Processes)
-            //.Include(_ => _.Processes)!.ThenInclude(_ => _.MetalMaterial)
-            //.Include(_ => _.Processes)!.ThenInclude(_ => _.DentinMaterial)
-            //.Include(_ => _.Processes)!.ThenInclude(_ => _.Color)
             .FirstOrDefaultAsync();
         Validate.ThrowIfNull(moduleDB);
 
@@ -326,18 +346,18 @@ public class ModuleService(DBContext _context) : IModuleService
         return entitiesDB;
     }
 
-    public async Task<ProcessDto> AddProcess(ProcessDto model)
+    public async Task<IList<ProcessDto>> AddProcess(ProcessDto model)
     {
         _context.Processes.Add(model);
         await _context.SaveChangesAsync();
 
-        var entityDB = await _context.Processes.Where(_ => _.Id == model.Id).Include(_ => _.DentinMaterial).Include(_ => _.MetalMaterial).Include(_ => _.Color).FirstOrDefaultAsync();
+        var entityDB = await _context.Processes.Where(_ => _.Id == model.Id).Include(_ => _.DentinMaterial).Include(_ => _.MetalMaterial).Include(_ => _.DiskMaterial).Include(_ => _.Color).FirstOrDefaultAsync();
         Validate.ThrowIfNull(entityDB);
 
-        return entityDB;
+        return await GetProcessesList(model.ModuleId);
     }
 
-    public async Task<ProcessDto> UpdateProcess(long id, ProcessDto model)
+    public async Task<IList<ProcessDto>> UpdateProcess(long id, ProcessDto model)
     {
         var entityDB = await _context.Processes.Where(_ => _.Id == id).FirstOrDefaultAsync();
         Validate.ThrowIfNull(entityDB);
@@ -351,13 +371,29 @@ public class ModuleService(DBContext _context) : IModuleService
         entityDB.RiskId = model.RiskId;
         entityDB.SemiProductId = model.SemiProductId;
         entityDB.StagesIds = model.StagesIds;
+        entityDB.Others = model.Others;
 
         await _context.SaveChangesAsync();
 
         var result = await _context.Processes.Where(_ => _.Id == model.Id).Include(_ => _.DentinMaterial).Include(_ => _.MetalMaterial).Include(_ => _.Color).FirstOrDefaultAsync();
+
         Validate.ThrowIfNull(result);
 
-        return result;
+        return await GetProcessesList(model.ModuleId); ;
+    }
+
+    private async Task<IList<ProcessDto>> GetProcessesList(long moduleId)
+    {
+        Validate.ThrowIfNull(moduleId);
+
+        var entitiesDB = await _context.Processes.Include(_ => _.MetalMaterial).Include(_ => _.DentinMaterial).Include(_ => _.DiskMaterial).Where(p => p.ModuleId == moduleId).ToListAsync();
+
+        foreach ( var entityDB in entitiesDB)
+        {
+            entityDB.Name = entityDB.GetRiepilogo(entityDB.MetalMaterial, entityDB.DentinMaterial, entityDB.DiskMaterial);
+        }
+
+        return entitiesDB;
     }
 
     public async Task RemoveProcess(long id)

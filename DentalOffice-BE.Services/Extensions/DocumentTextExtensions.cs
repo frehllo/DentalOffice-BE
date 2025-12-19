@@ -107,7 +107,7 @@ namespace DentalOffice_BE.Services.Extensions
                 
                 if (result is IList<object> strings)
                 {
-                    var distinctStrings = strings.Distinct();
+                    var distinctStrings = strings.Where(_ => _ != null && !string.IsNullOrEmpty(_.ToString())).Distinct();
                     var total = string.Join(", ", distinctStrings);
                     return total;
                 }

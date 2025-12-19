@@ -59,13 +59,13 @@ public class ModuleController(IModuleService _service) : ControllerBase
     }
 
     [HttpPost("process")]
-    public async Task<ProcessDto> AddProcess(ProcessDto model)
+    public async Task<IList<ProcessDto>> AddProcess(ProcessDto model)
     {
         return await _service.AddProcess(model);
     }
 
     [HttpPut("process/{id}")]
-    public async Task<ProcessDto> UpdateProcess(long id, ProcessDto model)
+    public async Task<IList<ProcessDto>> UpdateProcess(long id, ProcessDto model)
     {
         return await _service.UpdateProcess(id, model);
     }

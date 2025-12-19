@@ -145,6 +145,28 @@
           }
         },
         {
+          "key": "diskMaterialId",
+          "className": "col-12",
+          "type": "select",
+          "props": {
+            "label": "Dischi Policarbonato",
+            "required": false,
+            "options": [
+            ]
+          }
+        },
+        {
+          "key": "diskLotId",
+          "className": "col-12",
+          "type": "select",
+          "props": {
+            "label": "Lotto Discho Policarbonato",
+            "required": false,
+            "options": [
+            ]
+          }
+        },
+        {
           "key": "riskId",
           "className": "col-12",
           "type": "select",
@@ -160,10 +182,82 @@
           "type": "multi-select",
           "className": "col-12",
           "props": {
-            "label": "Lavorazioni",
+            "label": "Fasi di Lavorazione",
             "multiple": true,
             "options": [
             ]
+          }
+        },
+        {
+          "key": "others",
+          "className": "col-lg-7 col-sm-12",
+          "type": "input",
+          "props": {
+            "label": "Altro"
+          }
+        },
+        {
+          "key": "metalCustom",
+          "className": "col-lg-7 col-sm-12",
+          "type": "input",
+          "props": {
+            "label": "Metallo (temporaneo)"
+          }
+        },
+        {
+          "key": "metalLotCustom",
+          "className": "col-lg-7 col-sm-12",
+          "type": "input",
+          "props": {
+            "label": "Lotto Metallo (temporaneo)"
+          }
+        },
+        {
+          "key": "dentinCustom",
+          "className": "col-lg-7 col-sm-12",
+          "type": "input",
+          "props": {
+            "label": "Dentina (temporaneo)"
+          }
+        },
+        {
+          "key": "dentinLotCustom",
+          "className": "col-lg-7 col-sm-12",
+          "type": "input",
+          "props": {
+            "label": "Lotto Dentina (temporaneo)"
+          }
+        },
+        {
+          "key": "enamelCustom",
+          "className": "col-lg-7 col-sm-12",
+          "type": "input",
+          "props": {
+            "label": "Smalto (temporaneo)"
+          }
+        },
+        {
+          "key": "enamelLotCustom",
+          "className": "col-lg-7 col-sm-12",
+          "type": "input",
+          "props": {
+            "label": "Lotto Smalto (temporaneo)"
+          }
+        },
+        {
+          "key": "diskCustom",
+          "className": "col-lg-7 col-sm-12",
+          "type": "input",
+          "props": {
+            "label": "Disco (temporaneo)"
+          }
+        },
+        {
+          "key": "diskLotCustom",
+          "className": "col-lg-7 col-sm-12",
+          "type": "input",
+          "props": {
+            "label": "Lotto Disco (temporaneo)"
           }
         }
       ]
@@ -171,7 +265,7 @@
   ],
   "Grid":[
     {
-      "field": "metalMaterial.name",
+      "field": "name",
       "headerName": "Metal"
     },
     {

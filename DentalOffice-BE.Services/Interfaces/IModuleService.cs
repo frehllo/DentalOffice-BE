@@ -19,8 +19,8 @@ public interface IModuleService
     Task Delete(long id);
     Task<KeyValuePair<IEnumerable<FormFieldPropsOption>, IEnumerable<LotDto>>> GetLotsByMaterialId(long materialId);
     Task<object> GetLotsByMaterialIdAndColorId(long materialId, long colorId);
-    Task<ProcessDto> AddProcess(ProcessDto model);
-    Task<ProcessDto> UpdateProcess(long id, ProcessDto model);
+    Task<IList<ProcessDto>> AddProcess(ProcessDto model);
+    Task<IList<ProcessDto>> UpdateProcess(long id, ProcessDto model);
     Task RemoveProcess(long id);
     Task<IEnumerable<DocumentConfigurationDto>> GetDocumentsPrintPreviews(long id);
 }
