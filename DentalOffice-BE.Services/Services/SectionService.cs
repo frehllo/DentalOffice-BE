@@ -331,6 +331,7 @@ public class SectionService(DBContext _context) : ISectionService
                 documentconfiguration.Name = documentConfigurationModel.Name;
                 documentconfiguration.Content = documentConfigurationModel.Content;
                 documentconfiguration.CopyCount = documentConfigurationModel.CopyCount;
+                documentconfiguration.Order = documentConfigurationModel.Order;
                 break;
             case "lots":
                 LotDto? lot = await _context.Lots.Where(_ => _.Id == id).FirstOrDefaultAsync();

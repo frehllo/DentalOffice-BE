@@ -1,5 +1,4 @@
 ﻿using DentalOffice_BE.Data;
-using System.Text.Json.Serialization;
 
 namespace DentalOffice_BE.Services.Models;
 
@@ -12,14 +11,21 @@ public class Module
     public long StudioId { get; set; }
 }
 
-public class ModuleViewModel : Module
+public class ModuleListFilter
 {
-    public StudioDto? Studio { get; set; }
-    public ICollection<ProcessDto>? Processes { get; set; }
-    public ICollection<DocumentInstanceDto>? Instances { get; }
+    public string? Filter { get; set; }
+    public int? PageIndex { get; set; }
+    public int PerPage { get; set; } = 20;
 }
 
-public class ModuleInsertModel : Module
-{
-    public ICollection<ProcessDto>? Processes { get; set; }
+public class ModuleListModel { 
+
+    public ModuleListModel(List<ModuleDto> modules, int pageIndex) 
+    { 
+        this.Modules = modules;
+        this.PageIndex = pageIndex;
+    }
+
+    public ICollection<ModuleDto> Modules { get; set; }
+    public int? PageIndex { get; set; }
 }

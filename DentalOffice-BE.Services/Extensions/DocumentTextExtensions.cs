@@ -1,142 +1,86 @@
-﻿using System.Text.RegularExpressions;
+﻿using DentalOffice_BE;
+using DentalOffice_BE.Data;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
-using DentalOffice_BE.Data;
-using DentalOffice_BE;
-using Newtonsoft.Json;
-using System.Reflection;
 using Microsoft.CodeAnalysis.Scripting.Hosting;
+using Newtonsoft.Json;
+using System.Collections.Concurrent;
+using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace DentalOffice_BE.Services.Extensions
 {
     public static class IDocumentTextExtensions
     {
-        static readonly Assembly[] _references = [
-        typeof(Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions).Assembly,
-
-            typeof(DentalOffice_BE.Data.StageDto).Assembly
-            
-        ];
+        // Usiamo una cache che tiene conto anche del tipo T per evitare conflitti
+        private static readonly ConcurrentDictionary<string, Script<object>> _scriptCache = new();
 
         public static string ReplaceAndExecuteCode<T>(this string input, T model)
         {
-            string pattern = @"\{\{(.+?)\}\}";
+            var pattern = @"\{\{(.+?)\}\}";
+            var globals = new Globals<T> { data = model };
 
-            string inputObj = JsonConvert.DeserializeObject<object>(input)!.ToString()!;
+            // Prepariamo le opzioni con i riferimenti necessari
+            var options = ScriptOptions.Default
+                .WithReferences(typeof(T).Assembly, typeof(Enumerable).Assembly)
+                .WithImports("System", "System.Linq", "System.Collections.Generic");
 
-            // Usiamo una funzione di callback per gestire la sostituzione dei blocchi {{}}
-            string result = Regex.Replace(input, pattern, m =>
+            return Regex.Replace(input, pattern, m =>
             {
                 string expression = m.Groups[1].Value.Trim();
 
-                // Verifica se l'espressione contiene la keyword "foreach"
+                // Gestione rapida date
+                if (expression == "DateTime.Now") return DateTime.Now.ToString("dd/MM/yyyy");
 
-                Globals<T> data = new Globals<T>()
+                try
                 {
-                    data = model
-                };
+                    // La chiave della cache deve includere il nome del tipo T 
+                    // perché lo script compilato per Globals<Paziente> è diverso da Globals<Fattura>
+                    string cacheKey = $"{typeof(T).FullName}_{expression}";
 
-                if (expression.StartsWith("DateTime.Now"))
-                {
-                    var now = DateTime.Now.Date;
-                    return $"{now.Day}/{now.Month}/{now.Year}";
+                    var script = _scriptCache.GetOrAdd(cacheKey, _ => {
+                        return CSharpScript.Create<object>(
+                            expression,
+                            options,
+                            globalsType: typeof(Globals<T>)
+                        );
+                    });
+
+                    // Esecuzione dello script pre-compilato
+                    var result = script.RunAsync(globals).GetAwaiter().GetResult().ReturnValue;
+
+                    return FormatResult(result);
                 }
-
-                if (expression.StartsWith("IList"))
+                catch (Exception ex)
                 {
-                    // Esegui il loop sugli elementi e concatena i valori delle proprietà
-                    return ExecuteForeachExpression<T>(expression, data);
-                }
-                else
-                {
-                    // Esegui il codice sostituendo il nome della variabile con il valore di 'data'
-                    return ExecuteCode<T>(expression, data);
+                    return $"[[ERR: {ex.Message}]]";
                 }
             });
-
-            return result;
         }
 
-        public static string ExecuteCode<T>(string expression, object data)
+        private static string FormatResult(object? result)
         {
-            expression = Regex.Unescape(expression);
-            var assemblyReferences = _references;
-            var assemblyLoader = LoadAssemblies(assemblyReferences);
+            if (result == null) return string.Empty;
 
-            var encoding = Encoding.UTF8;
+            if (result is DateTime dt)
+                return dt.ToString("dd/MM/yyyy");
 
-            var options = ScriptOptions.Default
-            .WithReferences(assemblyReferences)
-            .WithEmitDebugInformation(true)
-            .WithFileEncoding(encoding);
-
-
-            try
+            if (result is System.Collections.IEnumerable list && !(result is string))
             {
-                // Esegui il codice e restituisci il risultato
-                var result = CSharpScript.EvaluateAsync("using System.Linq; using System.Collections.Generic; using DentalOffice_BE.Data;" + expression, options, globalsType: typeof(Globals<T>), globals: data).Result;
-
-                if (result is DateTime)
-                {
-                    DateTime date = (DateTime)result;
-                    var locale = date.ToLocalTime();
-                    result = $"{locale.Day}/{locale.Month}/{locale.Year}";
-                }
-
-                return result?.ToString() ?? string.Empty;
+                var parts = list.Cast<object>()
+                    .Where(x => x != null)
+                    .Select(x => x.ToString())
+                    .Distinct();
+                return string.Join(", ", parts);
             }
-            catch (Exception ex)
-            {
-                // Gestione degli errori
-                return $"ERROR: {ex.Message}";
-            }
+
+            return result.ToString() ?? string.Empty;
         }
+    }
 
-        public static string ExecuteForeachExpression<T>(string expression, object data)
-        {
-            try
-            {
-                var references = new[]
-                {
-                    typeof(object).Assembly,
-                    typeof(IList<object>).Assembly
-                };
-
-                IList<object>? result = CSharpScript.EvaluateAsync("using System.Collections.Generic;" + expression, ScriptOptions.Default.WithReferences(references), globalsType: typeof(Globals<T>), globals: data).Result as IList<object>;
-                
-                if (result is IList<object> strings)
-                {
-                    var distinctStrings = strings.Where(_ => _ != null && !string.IsNullOrEmpty(_.ToString())).Distinct();
-                    var total = string.Join(", ", distinctStrings);
-                    return total;
-                }
-                else
-                {
-                    return string.Empty;
-                }
-            }
-            catch (Exception ex)
-            {
-                return $"ERROR: {ex.Message}";
-            }
-        }
-
-        public class Globals<T>
-        {
-            public T? data { get; set; }
-        }
-
-        static InteractiveAssemblyLoader LoadAssemblies(Assembly[] assemblies)
-        {
-            var assemblyResolver = new InteractiveAssemblyLoader();
-
-            foreach (var assemblyReference in assemblies)
-            {
-                assemblyResolver.RegisterDependency(assemblyReference);
-            }
-
-            return assemblyResolver;
-        }
+    public class Globals<T>
+    {
+        public T data { get; set; }
     }
 }

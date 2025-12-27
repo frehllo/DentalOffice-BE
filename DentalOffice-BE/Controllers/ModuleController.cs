@@ -16,10 +16,10 @@ public class ModuleController(IModuleService _service) : ControllerBase
         return await _service.GetConfiguration();
     }
 
-    [HttpGet]
-    public async Task<IEnumerable<ModuleDto>> GetList()
+    [HttpPost("list")]
+    public async Task<ModuleListModel> GetList(ModuleListFilter filters)
     {
-        return await _service.GetList();
+        return await _service.GetList(filters);
     }
 
     [HttpGet("{id}")]

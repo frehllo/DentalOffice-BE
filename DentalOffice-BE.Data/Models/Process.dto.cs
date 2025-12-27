@@ -12,6 +12,8 @@ public class ProcessDto : BaseTableKey<long>
     public virtual string? Name { get; set; }
     [NotMapped]
     public virtual int[]? Dentals { get; set; }
+    [NotMapped]
+    public virtual string? ProcessDescription { get; set; }
     public long ModuleId { get; set; }
     public long? SemiProductId { get; set; }
     public long? MetalMaterialId { get; set; }

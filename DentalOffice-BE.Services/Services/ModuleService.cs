@@ -12,9 +12,35 @@ namespace DentalOffice_BE.Services.Services;
 
 public class ModuleService(DBContext _context) : IModuleService
 {
-    public async Task<IEnumerable<ModuleDto>> GetList()
+    public async Task<ModuleListModel> GetList(ModuleListFilter filters)
     {
-        return await _context.Modules.Include(_ => _.Studio).Include(_ => _.Processes).OrderByDescending(_ => _.UpdateDate).Take(50).ToListAsync();
+        int pageIndex = filters.PageIndex ?? 1;
+        int pageSize = filters.PerPage > 0 ? filters.PerPage : 50;
+        int skip = (pageIndex - 1) * pageSize;
+
+        var query = _context.Modules
+            .Include(m => m.Studio)
+            .Include(m => m.Processes)
+            .AsNoTracking()
+            .AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(filters.Filter))
+        {
+            var term = filters.Filter.Trim().ToLower();
+            query = query.Where(m =>
+                m.CustomerName.ToLower().Contains(term) ||
+                (m.Description != null && m.Description.ToLower().Contains(term)) ||
+                (m.Studio != null && m.Studio.Name.ToLower().Contains(term))
+            );
+        }
+
+        var filteredModules = await query
+            .OrderByDescending(m => m.UpdateDate)
+            .Skip(skip)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return new ModuleListModel(filteredModules, pageIndex);
     }
 
     public async Task<ModuleDto> Get(long id)
@@ -398,39 +424,37 @@ public class ModuleService(DBContext _context) : IModuleService
 
     private async Task UpdateModuleDescription(ProcessDto process)
     {
-        if (process.Dentals == null || !process.Dentals.Any()) return;
+        if (process.Dentals == null || !process.Dentals.Any() || string.IsNullOrEmpty(process.ProcessDescription)) return;
 
         var module = await _context.Modules.FirstOrDefaultAsync(m => m.Id == process.ModuleId);
         if (module == null) return;
 
-        string? materialName = null;
+        string? dentalList = process.Dentals.Any() ? string.Join(",", process.Dentals) : null;
+        string? detail = null;
 
-        if (process.SemiProductId != null)
+        if (!string.IsNullOrEmpty(process.ProcessDescription))
         {
-            materialName = (await _context.SemiProducts.AsNoTracking()
-                .FirstOrDefaultAsync(s => s.Id == process.SemiProductId))?.Name;
-        }
-        else if (process.MetalMaterialId != null || process.DentinMaterialId != null)
+            detail = process.ProcessDescription + $" su {dentalList}";
+        }else if (process.MetalMaterialId != null || process.DentinMaterialId != null)
         {
             var materialId = process.MetalMaterialId ?? process.DentinMaterialId;
-            materialName = (await _context.Materials.AsNoTracking()
+            var materialName = (await _context.Materials.AsNoTracking()
                 .FirstOrDefaultAsync(m => m.Id == materialId))?.Name;
+
+            if (materialName != null)
+                detail = $"{process.Dentals.Length} elementi in {materialName} su {dentalList}";
         }
 
-        if (string.IsNullOrEmpty(materialName)) return;
-
-        string dentalList = string.Join(",", process.Dentals);
-        string detail = process.SemiProductId != null
-            ? $"{materialName} su {dentalList}"
-            : $"{process.Dentals.Length} elementi in {materialName} su {dentalList}";
-
-        if (!string.IsNullOrEmpty(module.Description))
+        if (!string.IsNullOrEmpty(detail))
         {
-            module.Description += $" + {detail}";
-        }
-        else
-        {
-            module.Description = detail;
+            if (!string.IsNullOrEmpty(module.Description))
+            {
+                module.Description += $" + {detail}";
+            }
+            else
+            {
+                module.Description = detail;
+            }
         }
     }
 

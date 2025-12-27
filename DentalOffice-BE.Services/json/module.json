@@ -75,6 +75,14 @@
           }
         },
         {
+          "key": "processDescription",
+          "className": "col-lg-7 col-sm-12",
+          "type": "input",
+          "props": {
+            "label": "Lavorazione"
+          }
+        },
+        {
           "key": "semiProductId",
           "className": "col-12",
           "type": "select",
@@ -87,7 +95,7 @@
         },
         {
           "key": "metalMaterialId",
-          "className": "col-lg-6 col-sm-12",
+          "className": "col-12 col-md-6",
           "type": "select",
           "props": {
             "label": "Metallo",
@@ -109,7 +117,7 @@
         },
         {
           "key": "dentinMaterialId",
-          "className": "col-lg-6 col-sm-12",
+          "className": "col-12 col-md-6",
           "type": "select",
           "props": {
             "label": "Rivestimento estetico",
@@ -120,7 +128,7 @@
         },
         {
           "key": "colorId",
-          "className": "col-lg-6 col-sm-12",
+          "className": "col-12 col-md-6",
           "type": "select",
           "props": {
             "label": "Colore",
@@ -131,7 +139,7 @@
         },
         {
           "key": "dentinLotId",
-          "className": "col-lg-6 col-sm-12",
+          "className": "col-sm-12 col-md-6",
           "type": "select",
           "props": {
             "label": "N Lotto Dentina",
@@ -142,7 +150,7 @@
         },
         {
           "key": "enamelLotId",
-          "className": "col-lg-6 col-sm-12",
+          "className": "col-12 col-md-6",
           "type": "select",
           "props": {
             "label": "N Lotto Smalto",
@@ -153,7 +161,7 @@
         },
         {
           "key": "diskMaterialId",
-          "className": "col-12",
+          "className": "col-12 col-md-6",
           "type": "select",
           "props": {
             "label": "Dischi Policarbonato",
@@ -164,7 +172,7 @@
         },
         {
           "key": "diskLotId",
-          "className": "col-12",
+          "className": "col-12 col-md-6",
           "type": "select",
           "props": {
             "label": "Lotto Discho Policarbonato",
@@ -205,7 +213,7 @@
         },
         {
           "key": "metalCustom",
-          "className": "col-lg-7 col-sm-12",
+          "className": "col-12 col-md-6",
           "type": "input",
           "props": {
             "label": "Metallo (temporaneo)"
@@ -213,7 +221,7 @@
         },
         {
           "key": "metalLotCustom",
-          "className": "col-lg-7 col-sm-12",
+          "className": "col-12 col-md-6",
           "type": "input",
           "props": {
             "label": "Lotto Metallo (temporaneo)"
@@ -221,7 +229,7 @@
         },
         {
           "key": "dentinCustom",
-          "className": "col-lg-7 col-sm-12",
+          "className": "col-12 col-md-6",
           "type": "input",
           "props": {
             "label": "Dentina (temporaneo)"
@@ -229,7 +237,7 @@
         },
         {
           "key": "dentinLotCustom",
-          "className": "col-lg-7 col-sm-12",
+          "className": "col-12 col-md-6",
           "type": "input",
           "props": {
             "label": "Lotto Dentina (temporaneo)"
@@ -237,7 +245,7 @@
         },
         {
           "key": "enamelCustom",
-          "className": "col-lg-7 col-sm-12",
+          "className": "col-12 col-md-6",
           "type": "input",
           "props": {
             "label": "Smalto (temporaneo)"
@@ -245,7 +253,7 @@
         },
         {
           "key": "enamelLotCustom",
-          "className": "col-lg-7 col-sm-12",
+          "className": "col-12 col-md-6",
           "type": "input",
           "props": {
             "label": "Lotto Smalto (temporaneo)"
@@ -253,7 +261,7 @@
         },
         {
           "key": "diskCustom",
-          "className": "col-lg-7 col-sm-12",
+          "className": "col-12 col-md-6",
           "type": "input",
           "props": {
             "label": "Disco (temporaneo)"
@@ -261,7 +269,7 @@
         },
         {
           "key": "diskLotCustom",
-          "className": "col-lg-7 col-sm-12",
+          "className": "col-12 col-md-6",
           "type": "input",
           "props": {
             "label": "Lotto Disco (temporaneo)"

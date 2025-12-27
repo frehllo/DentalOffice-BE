@@ -12,7 +12,7 @@ namespace DentalOffice_BE.Services.Interfaces;
 public interface IModuleService
 {
     Task<ModuleFormConfiguration> GetConfiguration();
-    Task<IEnumerable<ModuleDto>> GetList();
+    Task<ModuleListModel> GetList(ModuleListFilter filters);
     Task<ModuleDto> Get(long id);
     Task<ModuleDto> Insert(ModuleDto model);
     Task<ModuleDto> Update(long id, ModuleDto model);

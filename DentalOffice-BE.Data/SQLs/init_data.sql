@@ -377,6 +377,9 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
         },
         {
             "field":"copyCount"
+        },
+        {
+            "field":"order"
         }
     ],
     "formConfiguration":
@@ -398,6 +401,15 @@ INSERT INTO main.sections (title, route, api_string, section_id, "Configuration"
                     "className":"col-12",
                     "props":{
                         "label":"Numero di Copie",
+                        "required":false
+                    }
+                },
+                {
+                    "key":"order",
+                    "type":"input",
+                    "className":"col-12",
+                    "props":{
+                        "label":"Ordine",
                         "required":false
                     }
                 },
