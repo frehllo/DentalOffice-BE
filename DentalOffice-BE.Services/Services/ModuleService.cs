@@ -34,7 +34,11 @@ public class ModuleService(DBContext _context) : IModuleService
             {
                 p.Module = null;
 
-                p.Name = p.GetRiepilogo(p.MetalMaterial, p.DentinMaterial, p.DiskMaterial);
+                p.SemiProduct = p.SemiProductId != null ? await _context.SemiProducts.FindAsync(p.SemiProductId) : null;
+
+                p.Name = p.GetRiepilogo(p.SemiProduct, p.MetalMaterial, p.DentinMaterial, p.DiskMaterial);
+
+                p.SemiProduct = null;
 
                 if (p.StagesIds != null && p.StagesIds.Count() > 0)
                 {
@@ -122,6 +126,11 @@ public class ModuleService(DBContext _context) : IModuleService
 
         if (moduleConfig.ProcessesForm != null && moduleConfig.ProcessesForm.Count > 0)
         {
+            if(moduleConfig.ProcessesForm?.FirstOrDefault()?.FieldGroup != null)
+            {
+                AddDefaultSelectOption(moduleConfig.ProcessesForm?.FirstOrDefault()?.FieldGroup?.ToList());
+            }
+
             var semiProducts = await _context.SemiProducts.OrderByDescending(_ => _.UpdateDate).ToDictionaryAsync(_ => _.Name, _ => _.Id);
 
             foreach (var s in semiProducts)
@@ -247,11 +256,37 @@ public class ModuleService(DBContext _context) : IModuleService
         return moduleConfig;
     }
 
+    private void AddDefaultSelectOption(List<FormFieldConfiguration>? fields)
+    {
+        if (fields == null) return;
+
+        foreach (var field in fields)
+        {
+            // 1. Se il campo ha delle Options, aggiungi "Seleziona" in testa
+            if (field.Props?.Options != null)
+            {
+                field.Props.Options.Add(new FormFieldPropsOption
+                {
+                    Label = "-- Seleziona",
+                    Value = null
+                });
+            }
+
+            // 2. Se il campo ha dei sotto-gruppi (FieldGroup), richiama il metodo ricorsivamente
+            if (field.FieldGroup != null && field.FieldGroup.Any())
+            {
+                AddDefaultSelectOption(fields);
+            }
+        }
+    }
+
     public async Task<KeyValuePair<IEnumerable<FormFieldPropsOption>,IEnumerable<LotDto>>> GetLotsByMaterialId(long materialId)
     {
         var lots = await _context.Lots.Where(_ => _.MaterialId == materialId).Include(_ => _.Material).OrderByDescending(_ => _.UpdateDate).ToListAsync();
 
         List<FormFieldPropsOption> options = new List<FormFieldPropsOption>();
+
+        options.Add(new FormFieldPropsOption() { Label = "-- Seleziona", Value = null });
 
         if (lots is not null && lots.Count > 0)
         {
@@ -288,6 +323,8 @@ public class ModuleService(DBContext _context) : IModuleService
 
         List<FormFieldPropsOption> enamelLotsOptions = new List<FormFieldPropsOption>();
 
+        enamelLotsOptions.Add(new FormFieldPropsOption() { Label = "-- Seleziona", Value = null });
+
         foreach (var el in enamelLots)
         {
             EnamelProperties props = JsonConvert.DeserializeObject<EnamelProperties>(el.Material!.MaterialProperties!.ToString());
@@ -298,6 +335,8 @@ public class ModuleService(DBContext _context) : IModuleService
         }
 
         List<FormFieldPropsOption> dentinLotsOptions = new List<FormFieldPropsOption>();
+
+        dentinLotsOptions.Add(new FormFieldPropsOption() { Label = "-- Seleziona", Value = null });
 
         foreach(var dl in dentinLots)
         {
@@ -349,12 +388,50 @@ public class ModuleService(DBContext _context) : IModuleService
     public async Task<IList<ProcessDto>> AddProcess(ProcessDto model)
     {
         _context.Processes.Add(model);
+
+        await UpdateModuleDescription(model);
+
         await _context.SaveChangesAsync();
 
-        var entityDB = await _context.Processes.Where(_ => _.Id == model.Id).Include(_ => _.DentinMaterial).Include(_ => _.MetalMaterial).Include(_ => _.DiskMaterial).Include(_ => _.Color).FirstOrDefaultAsync();
-        Validate.ThrowIfNull(entityDB);
-
         return await GetProcessesList(model.ModuleId);
+    }
+
+    private async Task UpdateModuleDescription(ProcessDto process)
+    {
+        if (process.Dentals == null || !process.Dentals.Any()) return;
+
+        var module = await _context.Modules.FirstOrDefaultAsync(m => m.Id == process.ModuleId);
+        if (module == null) return;
+
+        string? materialName = null;
+
+        if (process.SemiProductId != null)
+        {
+            materialName = (await _context.SemiProducts.AsNoTracking()
+                .FirstOrDefaultAsync(s => s.Id == process.SemiProductId))?.Name;
+        }
+        else if (process.MetalMaterialId != null || process.DentinMaterialId != null)
+        {
+            var materialId = process.MetalMaterialId ?? process.DentinMaterialId;
+            materialName = (await _context.Materials.AsNoTracking()
+                .FirstOrDefaultAsync(m => m.Id == materialId))?.Name;
+        }
+
+        if (string.IsNullOrEmpty(materialName)) return;
+
+        string dentalList = string.Join(",", process.Dentals);
+        string detail = process.SemiProductId != null
+            ? $"{materialName} su {dentalList}"
+            : $"{process.Dentals.Length} elementi in {materialName} su {dentalList}";
+
+        if (!string.IsNullOrEmpty(module.Description))
+        {
+            module.Description += $" + {detail}";
+        }
+        else
+        {
+            module.Description = detail;
+        }
     }
 
     public async Task<IList<ProcessDto>> UpdateProcess(long id, ProcessDto model)
@@ -390,7 +467,7 @@ public class ModuleService(DBContext _context) : IModuleService
 
         foreach ( var entityDB in entitiesDB)
         {
-            entityDB.Name = entityDB.GetRiepilogo(entityDB.MetalMaterial, entityDB.DentinMaterial, entityDB.DiskMaterial);
+            entityDB.Name = entityDB.GetRiepilogo(entityDB.SemiProduct, entityDB.MetalMaterial, entityDB.DentinMaterial, entityDB.DiskMaterial);
         }
 
         return entitiesDB;

@@ -68,6 +68,13 @@
       "fieldGroupClassName": "row",
       "fieldGroup": [
         {
+          "key": "dentals",
+          "type": "dentals",
+          "props": {
+            "label": "Seleziona i denti"
+          }
+        },
+        {
           "key": "semiProductId",
           "className": "col-12",
           "type": "select",

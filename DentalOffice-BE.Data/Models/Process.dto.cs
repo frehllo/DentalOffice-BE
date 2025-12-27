@@ -1,13 +1,7 @@
 ﻿using DentalOffice_BE.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DentalOffice_BE.Data;
 
@@ -16,6 +10,8 @@ public class ProcessDto : BaseTableKey<long>
 {
     [NotMapped]
     public virtual string? Name { get; set; }
+    [NotMapped]
+    public virtual int[]? Dentals { get; set; }
     public long ModuleId { get; set; }
     public long? SemiProductId { get; set; }
     public long? MetalMaterialId { get; set; }
@@ -49,9 +45,9 @@ public class ProcessDto : BaseTableKey<long>
     public RiskDto? Risk { get; set; }
     public MaterialDto? DiskMaterial { get; set; }
     public LotDto? DiskLot { get; set; }
-    public string GetRiepilogo(MaterialDto? metal, MaterialDto? dentin, MaterialDto? disk)
+    public string GetRiepilogo(SemiProductDto? semiProduct, MaterialDto? metal, MaterialDto? dentin, MaterialDto? disk)
     {
-        return metal != null ? metal.Name : dentin != null ? dentin.Name : disk != null ? disk.Name : "Processo Generico";
+        return semiProduct != null ? semiProduct.Name : metal != null ? metal.Name : dentin != null ? dentin.Name : disk != null ? disk.Name : "Processo Generico";
     }
 }
 
