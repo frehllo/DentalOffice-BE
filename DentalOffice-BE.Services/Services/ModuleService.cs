@@ -424,7 +424,7 @@ public class ModuleService(DBContext _context) : IModuleService
 
     private async Task UpdateModuleDescription(ProcessDto process)
     {
-        if (process.Dentals == null || !process.Dentals.Any() || string.IsNullOrEmpty(process.ProcessDescription)) return;
+        if (process.Dentals == null || !process.Dentals.Any()) return;
 
         var module = await _context.Modules.FirstOrDefaultAsync(m => m.Id == process.ModuleId);
         if (module == null) return;
