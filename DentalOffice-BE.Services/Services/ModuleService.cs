@@ -129,7 +129,11 @@ public class ModuleService(DBContext _context) : IModuleService
 
         ModuleFormConfiguration? moduleConfig = null;
 
-        using (StreamReader r = new StreamReader("../DentalOffice-BE.Services/json/module.json"))
+        string baseDirectory = AppContext.BaseDirectory;
+        
+        string filePath = Path.Combine(baseDirectory, "json", "module.json");
+
+        using (StreamReader r = new StreamReader(filePath))
         {
             string json = r.ReadToEnd();
             moduleConfig = JsonConvert.DeserializeObject<ModuleFormConfiguration>(json);

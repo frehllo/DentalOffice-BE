@@ -23,12 +23,12 @@ namespace DentalOffice_BE.Services.Extensions
 
             // Prepariamo le opzioni con i riferimenti necessari
             var options = ScriptOptions.Default
-                .WithReferences(typeof(T).Assembly, typeof(Enumerable).Assembly)
-                .WithImports("System", "System.Linq", "System.Collections.Generic");
+                .WithReferences(typeof(T).Assembly, typeof(Enumerable).Assembly, typeof(DentalOffice_BE.Data.StageDto).Assembly)
+                .WithImports("System", "System.Linq", "System.Collections.Generic", "DentalOffice_BE.Data");
 
             return Regex.Replace(input, pattern, m =>
             {
-                string expression = m.Groups[1].Value.Trim();
+                string expression = m.Groups[1].Value.Replace("\\\"", "\"").Trim();
 
                 // Gestione rapida date
                 if (expression == "DateTime.Now") return DateTime.Now.ToString("dd/MM/yyyy");

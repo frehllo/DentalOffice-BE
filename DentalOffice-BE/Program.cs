@@ -50,6 +50,7 @@ app.UseSwaggerUI();
 app.UseExceptionHandler(_ => { });
 
 app.UseHttpsRedirection();
+app.UseDefaultFiles();
 app.UseStaticFiles();
 
 app.UseRouting();
@@ -57,5 +58,12 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapFallbackToFile("index.html");
+
+if (!app.Environment.IsDevelopment())
+{
+    Process.Start(new ProcessStartInfo("http://localhost:5000") { UseShellExecute = true });
+}
 
 app.Run();
