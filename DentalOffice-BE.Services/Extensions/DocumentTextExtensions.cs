@@ -1,5 +1,6 @@
 ﻿using DentalOffice_BE;
 using DentalOffice_BE.Data;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.CodeAnalysis.Scripting.Hosting;
@@ -23,7 +24,14 @@ namespace DentalOffice_BE.Services.Extensions
 
             // Prepariamo le opzioni con i riferimenti necessari
             var options = ScriptOptions.Default
-                .WithReferences(typeof(T).Assembly, typeof(Enumerable).Assembly, typeof(DentalOffice_BE.Data.StageDto).Assembly)
+                .WithReferences(
+                    MetadataReference.CreateFromFile(typeof(T).Assembly.Location),
+                    MetadataReference.CreateFromFile(typeof(Enumerable).Assembly.Location),
+                    MetadataReference.CreateFromFile(typeof(DentalOffice_BE.Data.StageDto).Assembly.Location),
+                    // Aggiungi questo per gli assembly di sistema fondamentali
+                    MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
+                    MetadataReference.CreateFromFile(Assembly.Load("System.Runtime").Location)
+                )
                 .WithImports("System", "System.Linq", "System.Collections.Generic", "DentalOffice_BE.Data");
 
             return Regex.Replace(input, pattern, m =>

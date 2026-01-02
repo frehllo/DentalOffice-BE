@@ -103,13 +103,7 @@ public class ModuleService(DBContext _context) : IModuleService
         
         await _context.SaveChangesAsync();
 
-        var processes = await _context.Processes.Include(_ => _.Color).Include(_ => _.DentinMaterial).Include(_ => _.MetalMaterial).Where(_ => _.ModuleId == id).ToListAsync();
-        entityDB.Processes = processes;
-
-        foreach (var process in processes)
-        {
-            process.Module = null;
-        }
+        entityDB.Processes = await GetProcessesList(id);
 
         return entityDB;
     }
@@ -473,10 +467,20 @@ public class ModuleService(DBContext _context) : IModuleService
         entityDB.DentinMaterialId = model.DentinMaterialId;
         entityDB.ColorId = model.ColorId;
         entityDB.EnamelLotId = model.EnamelLotId;
+        entityDB.DiskMaterialId = model.DiskMaterialId;
+        entityDB.DiskLotId = model.DiskLotId;
         entityDB.RiskId = model.RiskId;
         entityDB.SemiProductId = model.SemiProductId;
         entityDB.StagesIds = model.StagesIds;
         entityDB.Others = model.Others;
+        entityDB.MetalCustom = model.MetalCustom;
+        entityDB.MetalLotCustom = model.MetalLotCustom;
+        entityDB.DentinCustom = model.DentinCustom;
+        entityDB.DentinLotCustom = model.DentinLotCustom;
+        entityDB.EnamelCustom = model.EnamelCustom;
+        entityDB.EnamelLotCustom = model.EnamelLotCustom;
+        entityDB.DiskCustom = model.DiskCustom;
+        entityDB.DiskLotCustom = model.DiskLotCustom;
 
         await _context.SaveChangesAsync();
 
@@ -495,6 +499,7 @@ public class ModuleService(DBContext _context) : IModuleService
 
         foreach ( var entityDB in entitiesDB)
         {
+            entityDB.Module = null;
             entityDB.Name = entityDB.GetRiepilogo(entityDB.SemiProduct, entityDB.MetalMaterial, entityDB.DentinMaterial, entityDB.DiskMaterial);
         }
 

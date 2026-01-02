@@ -6,6 +6,8 @@ using DentalOffice_BE.Services.Interfaces;
 using DentalOffice_BE.Services.Models;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using System.Dynamic;
 
 namespace DentalOffice_BE.Services.Services;
 
@@ -128,7 +130,40 @@ public class SectionService(DBContext _context) : ISectionService
     {
         var query = GetQuery(apiString);
 
-        return await query.ToListAsync();
+        var res = await query.ToListAsync();
+
+        foreach (var r in res)
+        {
+            if (HasProperty(r, "MaterialProperties") && r.MaterialProperties != null)
+            {
+                var converter = new ExpandoObjectConverter();
+                dynamic data = JsonConvert.DeserializeObject<ExpandoObject>(r.MaterialProperties.ToString(), converter);
+
+                if (data != null && HasProperty(data, "dentinId"))
+                {
+                    long idDaCercare = Convert.ToInt64(((IDictionary<string, object>)data)["dentinId"]);
+
+                    var entity = await _context.Materials.FindAsync(idDaCercare);
+
+                    if (entity != null)
+                    {
+                        data.name = entity.Name;
+
+                        r.MaterialProperties = data;
+                    }
+                }
+            }
+        }
+
+        if (res.Any())
+        {
+            if (HasProperty(res.First(), "Order"))
+            {
+                res = res.OrderBy(r => r.Order).ToList();
+            }
+        }
+
+        return res;
     }
 
     private IQueryable<dynamic> GetSingleQuery(string apiString, long id)
@@ -416,5 +451,15 @@ public class SectionService(DBContext _context) : ISectionService
         }
 
         await _context.SaveChangesAsync();
+    }
+    public static bool HasProperty(dynamic obj, string name)
+    {
+        if (obj is ExpandoObject)
+            return ((IDictionary<string, object>)obj).ContainsKey(name);
+
+        if (obj is Newtonsoft.Json.Linq.JObject)
+            return obj[name] != null;
+
+        return obj.GetType().GetProperty(name) != null;
     }
 }
