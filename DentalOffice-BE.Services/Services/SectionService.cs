@@ -70,7 +70,7 @@ public class SectionService(DBContext _context) : ISectionService
 
                 if (data?.Configuration?.FormConfiguration?.FirstOrDefault()?.FieldGroup?.FirstOrDefault(_ => _.Key == "colorId") != null)
                 {
-                    var colors = await _context.Colors.OrderByDescending(_ => _.UpdateDate).ToDictionaryAsync(_ => _.Code, _ => _.Id);
+                    var colors = await _context.Colors.OrderBy(_ => _.UpdateDate).ToDictionaryAsync(_ => _.Code, _ => _.Id);
 
                     foreach (var c in colors)
                     {
@@ -292,10 +292,10 @@ public class SectionService(DBContext _context) : ISectionService
                 Validate.ThrowIfNull(materialDto);
                 if(materialDto.MaterialProperties != null)
                 {
-                    if(materialDto.MaterialTypeId == (long)MaterialType.Enamel)
-                    {
-                        materialDto.MaterialProperties = JsonConvert.DeserializeObject<EnamelProperties>(materialDto.MaterialProperties.ToString());
-                    }
+                    materialDto.MaterialProperties = JsonConvert.DeserializeObject<ExpandoObject>(
+                        materialDto.MaterialProperties.ToString(),
+                        new ExpandoObjectConverter()
+                    );
                 }
                 materialDto.MaterialTypeId = id;
                 _context.Materials.Add(materialDto);

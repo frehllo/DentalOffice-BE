@@ -177,7 +177,21 @@ public class ModuleService(DBContext _context) : IModuleService
                 });
             }
 
-            var metalMaterialLots = await _context.Lots.Include(_ => _.Material).Where(_ => _.Material!.MaterialTypeId == (long)MaterialType.Metal).OrderByDescending(_ => _.UpdateDate).ToDictionaryAsync(_ => _.Code, _ => _.Id);
+            var metalMaterialLotsGroup = await _context.Lots
+                .Include(l => l.Material)
+                .Include(l => l.Color)
+                .Where(l => l.Material!.MaterialTypeId == (long)MaterialType.Metal)
+                .GroupBy(l => new { l.MaterialId, l.ColorId })
+                .Select(g => g.OrderByDescending(x => x.UpdateDate).First())
+                .ToListAsync();
+
+            var metalMaterialLots = metalMaterialLotsGroup.ToDictionary(
+                l => {
+                    var materialName = l.Material?.Name ?? "N/A";
+                    return $"{l.Code} - {materialName}";
+                },
+                l => l.Id
+            );
 
             foreach (var m in metalMaterialLots)
             {
@@ -199,7 +213,22 @@ public class ModuleService(DBContext _context) : IModuleService
                 });
             }
 
-            var dentinMaterialLots = await _context.Lots.Include(_ => _.Material).Where(_ => _.Material!.MaterialTypeId == (long)MaterialType.Dentin).ToDictionaryAsync(_ => _.Code, _ => _.Id);
+            var dentinMaterialLotsGroup = await _context.Lots
+                .Include(l => l.Material)
+                .Include(l => l.Color)
+                .Where(l => l.Material!.MaterialTypeId == (long)MaterialType.Dentin)
+                .GroupBy(l => new { l.MaterialId, l.ColorId })
+                .Select(g => g.OrderByDescending(x => x.UpdateDate).First())
+                .ToListAsync();
+
+            var dentinMaterialLots = dentinMaterialLotsGroup.ToDictionary(
+                l => {
+                    var materialName = l.Material?.Name ?? "N/A";
+                    var colorName = l.Color != null ? $" ({l.Color.Code})" : "";
+                    return $"{l.Code} - {materialName}{colorName}";
+                },
+                l => l.Id
+            );
 
             foreach (var d in dentinMaterialLots)
             {
@@ -210,7 +239,49 @@ public class ModuleService(DBContext _context) : IModuleService
                 });
             }
 
-            var enamelMaterialLots = await _context.Lots.Include(_ => _.Material).Where(_ => _.Material!.MaterialTypeId == (long)MaterialType.Enamel).OrderByDescending(_ => _.UpdateDate).ToDictionaryAsync(_ => _.Code, _ => _.Id);
+            var enamelLotsDto = await _context.Lots
+                .Include(l => l.Material)
+                .Where(l => l.Material!.MaterialTypeId == (long)MaterialType.Enamel)
+                .OrderByDescending(l => l.UpdateDate)
+                .ToListAsync();
+
+            var processedLots = enamelLotsDto
+                .Select(l => {
+                    long? dId = null;
+                    if (l.Material?.MaterialProperties != null)
+                    {
+                        var props = JsonConvert.DeserializeObject<dynamic>(l.Material.MaterialProperties.ToString());
+                        dId = (long?)props?.dentinId;
+                    }
+                    return new { Lot = l, DentinId = dId };
+                })
+                .GroupBy(x => new { x.Lot.MaterialId, x.DentinId })
+                .Select(g => g.First())
+                .ToList();
+
+            var allDentinIds = processedLots
+                .Where(x => x.DentinId.HasValue)
+                .Select(x => x.DentinId!.Value)
+                .Distinct()
+                .ToList();
+
+            var dentinNamesMap = await _context.Materials
+                .Where(m => allDentinIds.Contains(m.Id))
+                .ToDictionaryAsync(m => m.Id, m => m.Name);
+
+            var enamelMaterialLots = processedLots.ToDictionary(
+                x => {
+                    var lot = x.Lot;
+                    var materialName = lot.Material?.Name ?? "N/A";
+
+                    var dentinSuffix = x.DentinId.HasValue && dentinNamesMap.TryGetValue(x.DentinId.Value, out var dName)
+                        ? $" - {dName}"
+                        : "";
+
+                    return $"{lot.Code} - {materialName}{dentinSuffix}";
+                },
+                x => x.Lot.Id
+            );
 
             foreach (var m in enamelMaterialLots)
             {
@@ -232,7 +303,7 @@ public class ModuleService(DBContext _context) : IModuleService
                 });
             }
 
-            var diskMaterialsLots = await _context.Lots.Include(_ => _.Material).Where(_ => _.Material!.MaterialTypeId == (long)MaterialType.PolycarbonateDisc).OrderByDescending(_ => _.UpdateDate).ToDictionaryAsync(_ => _.Code, _ => _.Id);
+            var diskMaterialsLots = await _context.Lots.Include(_ => _.Material).Where(_ => _.Material!.MaterialTypeId == (long)MaterialType.PolycarbonateDisc).OrderByDescending(_ => _.UpdateDate).ToDictionaryAsync(_ => $"{(_.Material != null ? $"{_.Code} - {_.Material.Name}" : _.Code)}", _ => _.Id);
 
             foreach (var m in diskMaterialsLots)
             {
@@ -243,7 +314,7 @@ public class ModuleService(DBContext _context) : IModuleService
                 });
             }
 
-            var colors = await _context.Colors.OrderByDescending(_ => _.UpdateDate).ToDictionaryAsync(_ => _.Code, _ => _.Id);
+            var colors = await _context.Colors.OrderBy(_ => _.UpdateDate).ToDictionaryAsync(_ => _.Code, _ => _.Id);
 
             foreach (var c in colors)
             {
