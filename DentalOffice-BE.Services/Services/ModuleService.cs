@@ -84,6 +84,8 @@ public class ModuleService(DBContext _context) : IModuleService
 
     public async Task<ModuleDto> Insert(ModuleDto model)
     {
+        model.CustomerName = model.CustomerName.ToUpper();
+
         _context.Add(model);
         await _context.SaveChangesAsync();
 
@@ -95,7 +97,7 @@ public class ModuleService(DBContext _context) : IModuleService
         var entityDB = await _context.Modules.Where(_ => _.Id == id).FirstOrDefaultAsync();
         Validate.ThrowIfNull(entityDB);
 
-        entityDB.CustomerName = model.CustomerName;
+        entityDB.CustomerName = model.CustomerName.ToUpper();
         entityDB.PrescriptionDate = model.PrescriptionDate != null ? model.PrescriptionDate.Value.ToUniversalTime() : model.PrescriptionDate;
         entityDB.DeliveryDate = model.DeliveryDate != null ? model.DeliveryDate.Value.ToUniversalTime() : model.DeliveryDate;
         entityDB.Description = model.Description;
@@ -448,6 +450,18 @@ public class ModuleService(DBContext _context) : IModuleService
         var moduleDB = await _context.Modules.Include(_ => _.Studio).Where(_ => _.Id == id)
             .FirstOrDefaultAsync();
         Validate.ThrowIfNull(moduleDB);
+
+        TimeZoneInfo italyZone = TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time");
+
+        if(moduleDB.PrescriptionDate.HasValue)
+        {
+            moduleDB.PrescriptionDate = TimeZoneInfo.ConvertTimeFromUtc(moduleDB.PrescriptionDate.Value, italyZone);
+        }
+
+        if (moduleDB.DeliveryDate.HasValue)
+        {
+            moduleDB.DeliveryDate = TimeZoneInfo.ConvertTimeFromUtc(moduleDB.DeliveryDate.Value, italyZone);
+        }
 
         var processesDB = await _context.Processes.Include(_ => _.Color).Include(_ => _.DentinMaterial).Include(_ => _.MetalMaterial).Include(_ => _.SemiProduct).Include(_ => _.MetalLot).Include(_ => _.DentinLot).Include(_ => _.EnamelLot).Where(_ => _.ModuleId == id).ToListAsync();
         var stagesDB = await _context.Stages.ToListAsync();
